@@ -222,9 +222,8 @@ export const DailyHabitsStep: React.FC<DailyHabitsStepProps> = ({ data, onNext, 
         <AppButton
           onClick={handleNext}
           disabled={!isValid}
-          variant="primary"
           size="lg"
-          className="px-8 py-3"
+          className="border-2 px-8 py-3"
         >
           🚀 Start Your Journey
         </AppButton>

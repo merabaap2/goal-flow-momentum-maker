@@ -13,15 +13,15 @@ export const generateGeminiSuggestions = async (prompt: string, context?: string
         messages: [
           {
             role: 'system',
-            content: 'You are a goal coach. Provide exactly 3 comprehensive actionable suggestions. Each suggestion MUST be exactly 2 complete lines. First line: detailed main action (12-15 words). Second line: specific benefit or implementation detail (12-15 words). Make each line substantial and fill the space completely.'
+            content: 'You are a goal coach. You MUST provide exactly 3 separate actionable suggestions. Each suggestion MUST be exactly 3 lines. Line 1: main action (10-12 words). Line 2: implementation detail (10-12 words). Line 3: expected benefit (10-12 words). Always return exactly 3 suggestions in JSON array format.'
           },
           {
             role: 'user',
-            content: `Goal: "${context?.replace('User\'s dream: ', '') || prompt}"\n\nGive me exactly 3 comprehensive actionable steps. Each suggestion MUST be exactly 2 full lines:\n\nLine 1: Detailed main action (12-15 words)\nLine 2: Specific benefit or implementation detail (12-15 words)\n\nMake each line substantial and complete. Format: ["Detailed action 1\\nSpecific implementation detail 1", "Detailed action 2\\nSpecific implementation detail 2", "Detailed action 3\\nSpecific implementation detail 3"]`
+            content: `Goal: "${context?.replace('User\'s dream: ', '') || prompt}"\n\nProvide exactly 3 different actionable suggestions. Each suggestion must have exactly 3 lines:\n\nLine 1: Main action (10-12 words)\nLine 2: Implementation detail (10-12 words) \nLine 3: Expected benefit (10-12 words)\n\nIMPORTANT: Return exactly 3 suggestions in this format: ["Action 1\\nImplementation 1\\nBenefit 1", "Action 2\\nImplementation 2\\nBenefit 2", "Action 3\\nImplementation 3\\nBenefit 3"]`
           }
         ],
-        temperature: 0.7,
-        max_tokens: 500,
+        temperature: 0.8,
+        max_tokens: 600,
       })
     });
 
@@ -41,15 +41,24 @@ export const generateGeminiSuggestions = async (prompt: string, context?: string
       const jsonMatch = textContent.match(/\[.*?\]/s);
       if (jsonMatch) {
         const suggestions = JSON.parse(jsonMatch[0]);
-        return Array.isArray(suggestions) ? suggestions.slice(0, 5) : [];
+        if (Array.isArray(suggestions) && suggestions.length >= 3) {
+          return suggestions.slice(0, 3); // Ensure exactly 3 suggestions
+        }
       }
     } catch (parseError) {
-      // If JSON parsing fails, split by newlines and clean up
+      // If JSON parsing fails, try to extract 3 distinct suggestions
       const lines = textContent.split('\n')
         .map(line => line.replace(/^[\d\-\*\.\s]+/, '').trim())
-        .filter(line => line.length > 0 && !line.includes('[') && !line.includes(']'))
-        .slice(0, 5);
-      return lines;
+        .filter(line => line.length > 10);
+      
+      // Group lines into sets of 3 for suggestions
+      const suggestions = [];
+      for (let i = 0; i < Math.min(9, lines.length); i += 3) {
+        if (i + 2 < lines.length) {
+          suggestions.push(`${lines[i]}\n${lines[i+1]}\n${lines[i+2]}`);
+        }
+      }
+      return suggestions.slice(0, 3);
     }
 
     return [];

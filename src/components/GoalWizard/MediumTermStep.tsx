@@ -153,7 +153,7 @@ export const MediumTermStep: React.FC<MediumTermStepProps> = ({ data, onNext, on
   };
 
   return (
-    <div className="space-y-4 pb-16">
+    <div className="space-y-4">
       <div className="text-center space-y-3">
         <div className="text-6xl mb-4">🎯</div>
         <h2 className="text-2xl font-bold text-[#374151]">What goals will help you achieve your dreams?</h2>
@@ -244,15 +244,16 @@ export const MediumTermStep: React.FC<MediumTermStepProps> = ({ data, onNext, on
         ))}
       </div>
 
-      <div className="fixed bottom-4 left-2 right-2 bg-white/95 backdrop-blur-md border border-gray-200 rounded-lg p-3 max-w-[356px] mx-auto shadow-lg">
-        <div className="flex justify-between gap-2">
-          <AppButton variant="outline" onClick={onBack} className="flex-1 h-10 border-2">
+      {/* Navigation buttons at the end of content */}
+      <div className="pt-6 pb-8">
+        <div className="flex justify-between gap-3 max-w-[356px] mx-auto">
+          <AppButton variant="outline" onClick={onBack} className="flex-1 h-12 border-2 text-sm">
             ← Back
           </AppButton>
           <AppButton
             onClick={handleNext}
             disabled={!isValid}
-            className="flex-1 h-10"
+            className="flex-1 h-12 text-sm"
           >
             Continue →
           </AppButton>

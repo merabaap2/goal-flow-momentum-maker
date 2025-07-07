@@ -42,7 +42,7 @@ export const MediumGoalSection: React.FC<MediumGoalSectionProps> = ({
           size="sm"
           onClick={onGenerateSuggestions}
           disabled={isGeneratingSuggestions}
-          className="shrink-0 border-yellow-500 hover:bg-yellow-50"
+          className="shrink-0 border-yellow-500 hover:bg-yellow-50 ml-4"
         >
           <Lightbulb className="h-4 w-4 text-yellow-500" />
         </AppButton>

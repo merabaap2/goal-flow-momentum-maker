@@ -194,30 +194,29 @@ export const DailyHabitsStep: React.FC<DailyHabitsStepProps> = ({ data, onNext, 
         </div>
       </div>
 
-      <div className="space-y-6">
-        {allMediumTermGoals.map((mediumGoal, goalIndex) => (
-          <Card key={goalIndex} className="border-2 border-gray-200">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-xl text-[#374151]">Daily Habits for Your Goals</CardTitle>
-              <p className="text-gray-600 text-sm">Create small daily habits that will help you achieve your medium-term goals.</p>
-            </CardHeader>
-            
-            <CardContent>
-              <MediumGoalSection
-                mediumGoal={mediumGoal}
-                habits={dailyHabits[mediumGoal] || []}
-                suggestions={suggestions[mediumGoal] || []}
-                isGeneratingSuggestions={isGeneratingSuggestions}
-                onGenerateSuggestions={() => generateSuggestions(mediumGoal)}
-                onApplySuggestion={(suggestion) => applySuggestion(mediumGoal, suggestion)}
-                onUpdateHabit={(index, value) => updateHabit(mediumGoal, index, value)}
-                onRemoveHabit={(index) => removeHabit(mediumGoal, index)}
-                onAddHabit={() => addHabit(mediumGoal)}
-              />
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <Card className="border-2 border-gray-200">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-xl text-[#374151]">Daily Habits for Your Goals</CardTitle>
+          <p className="text-gray-600 text-sm">Create small daily habits that will help you achieve your medium-term goals.</p>
+        </CardHeader>
+        
+        <CardContent className="space-y-8">
+          {allMediumTermGoals.map((mediumGoal, goalIndex) => (
+            <MediumGoalSection
+              key={goalIndex}
+              mediumGoal={mediumGoal}
+              habits={dailyHabits[mediumGoal] || []}
+              suggestions={suggestions[mediumGoal] || []}
+              isGeneratingSuggestions={isGeneratingSuggestions}
+              onGenerateSuggestions={() => generateSuggestions(mediumGoal)}
+              onApplySuggestion={(suggestion) => applySuggestion(mediumGoal, suggestion)}
+              onUpdateHabit={(index, value) => updateHabit(mediumGoal, index, value)}
+              onRemoveHabit={(index) => removeHabit(mediumGoal, index)}
+              onAddHabit={() => addHabit(mediumGoal)}
+            />
+          ))}
+        </CardContent>
+      </Card>
 
       <div className="flex justify-between pt-4">
         <AppButton variant="outline" onClick={onBack}>

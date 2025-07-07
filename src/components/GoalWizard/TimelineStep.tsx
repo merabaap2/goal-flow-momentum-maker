@@ -46,12 +46,12 @@ export const TimelineStep: React.FC<TimelineStepProps> = ({ data, onNext, onBack
       </div>
 
       {/* First row: 5 and 10 years */}
-      <div className="grid grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-2 gap-3 mb-3">
         {timelineOptions.slice(0, 2).map((option) => (
           <Card 
             key={option.years}
             className={cn(
-              "cursor-pointer transition-all duration-200 hover:shadow-lg border-2 h-32",
+              "cursor-pointer transition-all duration-200 hover:shadow-lg border-2 h-28",
               selectedTimeline === option.years && !showCustom
                 ? "border-[#2BD192] bg-green-50 shadow-md" 
                 : "border-gray-200 hover:border-[#2BD192]"
@@ -61,22 +61,22 @@ export const TimelineStep: React.FC<TimelineStepProps> = ({ data, onNext, onBack
               setShowCustom(false);
             }}
           >
-            <CardContent className="p-4 text-center h-full flex flex-col justify-center">
-              <div className="text-2xl mb-2">{option.icon}</div>
-              <h3 className="font-bold text-base text-[#374151] mb-1">{option.label}</h3>
-              <p className="text-gray-600 text-xs">{option.description}</p>
+            <CardContent className="p-3 text-center h-full flex flex-col justify-center">
+              <div className="text-xl mb-1">{option.icon}</div>
+              <h3 className="font-bold text-sm text-[#374151] mb-1">{option.label}</h3>
+              <p className="text-gray-600 text-xs leading-tight">{option.description}</p>
             </CardContent>
           </Card>
         ))}
       </div>
 
       {/* Second row: 15 and 20 years */}
-      <div className="grid grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-2 gap-3 mb-3">
         {timelineOptions.slice(2, 4).map((option) => (
           <Card 
             key={option.years}
             className={cn(
-              "cursor-pointer transition-all duration-200 hover:shadow-lg border-2 h-32",
+              "cursor-pointer transition-all duration-200 hover:shadow-lg border-2 h-28",
               selectedTimeline === option.years && !showCustom
                 ? "border-[#2BD192] bg-green-50 shadow-md" 
                 : "border-gray-200 hover:border-[#2BD192]"
@@ -86,10 +86,10 @@ export const TimelineStep: React.FC<TimelineStepProps> = ({ data, onNext, onBack
               setShowCustom(false);
             }}
           >
-            <CardContent className="p-4 text-center h-full flex flex-col justify-center">
-              <div className="text-2xl mb-2">{option.icon}</div>
-              <h3 className="font-bold text-base text-[#374151] mb-1">{option.label}</h3>
-              <p className="text-gray-600 text-xs">{option.description}</p>
+            <CardContent className="p-3 text-center h-full flex flex-col justify-center">
+              <div className="text-xl mb-1">{option.icon}</div>
+              <h3 className="font-bold text-sm text-[#374151] mb-1">{option.label}</h3>
+              <p className="text-gray-600 text-xs leading-tight">{option.description}</p>
             </CardContent>
           </Card>
         ))}
@@ -98,29 +98,29 @@ export const TimelineStep: React.FC<TimelineStepProps> = ({ data, onNext, onBack
       {/* Custom timeline spanning full width */}
       <Card 
         className={cn(
-          "cursor-pointer transition-all duration-200 border-2 h-32",
+          "cursor-pointer transition-all duration-200 border-2 h-24",
           showCustom 
             ? "border-[#2BD192] bg-green-50" 
             : "border-gray-200 hover:border-[#2BD192]"
         )}
         onClick={() => setShowCustom(true)}
       >
-        <CardContent className="p-4 h-full flex flex-col justify-center">
-          <div className="flex items-center justify-center space-x-3 mb-3">
-            <Target className="h-5 w-5 text-[#2BD192]" />
-            <h3 className="font-bold text-base text-[#374151]">Custom Timeline</h3>
+        <CardContent className="p-3 h-full flex flex-col justify-center">
+          <div className="flex items-center justify-center space-x-2 mb-2">
+            <Target className="h-4 w-4 text-[#2BD192]" />
+            <h3 className="font-bold text-sm text-[#374151]">Custom Timeline</h3>
           </div>
-          <div className="flex items-center justify-center space-x-3">
+          <div className="flex items-center justify-center space-x-2">
             <input
               type="number"
               placeholder="Enter years"
               value={customTimeline}
               onChange={(e) => setCustomTimeline(e.target.value)}
-              className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:border-[#2BD192] focus:outline-none text-center"
+              className="w-20 px-2 py-1 border border-gray-300 rounded-lg focus:border-[#2BD192] focus:outline-none text-center text-sm"
               min="1"
               max="50"
             />
-            <span className="text-gray-600 font-medium">years</span>
+            <span className="text-gray-600 text-sm font-medium">years</span>
           </div>
         </CardContent>
       </Card>

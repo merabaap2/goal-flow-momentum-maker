@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AppButton } from '@/components/ui/AppButton';
 import { CardTitle } from '@/components/ui/card';
 import { Lightbulb } from 'lucide-react';
@@ -29,13 +29,30 @@ export const MediumGoalSection: React.FC<MediumGoalSectionProps> = ({
   onRemoveHabit,
   onAddHabit,
 }) => {
+  const [isGoalExpanded, setIsGoalExpanded] = useState(false);
+  const isLongGoal = mediumGoal.length > 50; // Check if goal text is long
+
   return (
     <div className="space-y-4">
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <CardTitle className="text-lg text-[#374151] mb-2 line-clamp-2">
+          <CardTitle 
+            className={`text-lg text-[#374151] mb-2 cursor-pointer hover:text-[#2BD192] transition-colors ${
+              isGoalExpanded || !isLongGoal ? '' : 'line-clamp-2'
+            }`}
+            onClick={() => isLongGoal && setIsGoalExpanded(!isGoalExpanded)}
+            title={isLongGoal ? "Click to expand/collapse" : undefined}
+          >
             🎯 {mediumGoal}
           </CardTitle>
+          {isLongGoal && (
+            <button
+              onClick={() => setIsGoalExpanded(!isGoalExpanded)}
+              className="text-xs text-gray-500 hover:text-[#2BD192] transition-colors"
+            >
+              {isGoalExpanded ? "Show less" : "Show more..."}
+            </button>
+          )}
         </div>
         <AppButton
           variant="outline"

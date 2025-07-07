@@ -13,11 +13,11 @@ export const generateGeminiSuggestions = async (prompt: string, context?: string
         messages: [
           {
             role: 'system',
-            content: 'You are a concise goal coach. Provide actionable suggestions in exactly 2 lines each. First line: main action (8-12 words). Second line: specific detail or benefit (8-12 words). Keep it practical and engaging for Gen Z users.'
+            content: 'You are a diverse goal coach. Provide 5 DIFFERENT types of actionable suggestions covering various aspects: skills, planning, resources, networking, and mindset. Each suggestion must be exactly 2 lines. First line: main action (8-12 words). Second line: specific detail or benefit (8-12 words). Make each suggestion unique and appealing to different personality types.'
           },
           {
             role: 'user',
-            content: `Goal: "${context?.replace('User\'s dream: ', '') || prompt}"\n\nGive me 5 actionable steps. Each suggestion must be exactly 2 lines:\nLine 1: Main action (8-12 words)\nLine 2: Specific detail/benefit (8-12 words)\n\nFormat: ["Action 1\\nDetail 1", "Action 2\\nDetail 2", "Action 3\\nDetail 3", "Action 4\\nDetail 4", "Action 5\\nDetail 5"]`
+            content: `Goal: "${context?.replace('User\'s dream: ', '') || prompt}"\n\nGive me exactly 5 diverse actionable steps that cover different approaches:\n1. Skill-building approach\n2. Planning/preparation approach  \n3. Resource/financial approach\n4. Social/networking approach\n5. Mindset/personal development approach\n\nEach suggestion exactly 2 lines:\nLine 1: Main action (8-12 words)\nLine 2: Specific detail/benefit (8-12 words)\n\nFormat: ["Action 1\\nDetail 1", "Action 2\\nDetail 2", "Action 3\\nDetail 3", "Action 4\\nDetail 4", "Action 5\\nDetail 5"]`
           }
         ],
         temperature: 0.7,

@@ -212,8 +212,7 @@ export const ShortTermStep: React.FC<ShortTermStepProps> = ({ data, onNext, onBa
                     disabled={isGeneratingSuggestions}
                     className="text-xs px-3 py-1 h-8"
                   >
-                    <Lightbulb className="h-3 w-3 mr-1" />
-                    Ideas
+                    <Lightbulb className="h-3 w-3 text-yellow-500" />
                   </AppButton>
                 </div>
               </div>

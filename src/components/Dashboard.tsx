@@ -4,6 +4,8 @@ import { useApp } from '../context/AppContext';
 import { ProgressRing } from './ui/ProgressRing';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { CheckCircle2, Clock, Target, Calendar } from 'lucide-react';
 
 export const Dashboard: React.FC = () => {
   const { store } = useApp();
@@ -138,17 +140,102 @@ export const Dashboard: React.FC = () => {
         </CardContent>
       </Card>
 
+      {/* Medium-Term Goals Details */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Target className="h-5 w-5 text-blue-500" />
+            <span>Medium-Term Goals</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {store.dreams.map((dream) => (
+              dream.enablers.map((enabler, enablerIndex) => (
+                <div key={enabler.id} className="border border-gray-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-semibold text-[#374151]">{enabler.name}</h4>
+                    <Badge variant="outline" className="text-xs">
+                      {dream.text}
+                    </Badge>
+                  </div>
+                  
+                  <div className="flex items-center space-x-4">
+                    <div className="flex-1">
+                      <Progress 
+                        value={enabler.shortGoals.length > 0 ? 
+                          (enabler.shortGoals.filter((goal: any) => goal.done).length / enabler.shortGoals.length) * 100 : 0}
+                        className="h-2"
+                      />
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {enabler.shortGoals.filter((goal: any) => goal.done).length}/{enabler.shortGoals.length} tasks
+                    </div>
+                  </div>
+                  
+                  <div className="mt-3 flex items-center text-sm text-gray-500">
+                    <CheckCircle2 className="h-4 w-4 mr-1" />
+                    {enabler.dailyHabits.length} daily habits
+                  </div>
+                </div>
+              ))
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Pending Tasks */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <Clock className="h-5 w-5 text-purple-500" />
+            <span>Pending Tasks</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {store.dreams.flatMap(dream => 
+              dream.enablers.flatMap((enabler: any) => 
+                enabler.shortGoals
+                  .filter((goal: any) => !goal.done)
+                  .slice(0, 5) // Show only first 5 pending tasks
+                  .map((goal: any) => (
+                    <div key={goal.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                      <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-[#374151]">{goal.detail}</p>
+                        <p className="text-xs text-gray-500">{enabler.name}</p>
+                      </div>
+                    </div>
+                  ))
+              )
+            ).slice(0, 5)}
+            
+            {store.dreams.flatMap(dream => 
+              dream.enablers.flatMap((enabler: any) => 
+                enabler.shortGoals.filter((goal: any) => !goal.done)
+              )
+            ).length === 0 && (
+              <div className="text-center py-8">
+                <div className="text-4xl mb-2">🎉</div>
+                <p className="text-gray-600">All tasks completed!</p>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Today's Habits */}
       {todayHabits.total > 0 && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
-              <span className="text-2xl">📅</span>
+              <Calendar className="h-5 w-5 text-orange-500" />
               <span>Today's Habits</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-center">
+            <div className="text-center mb-6">
               <ProgressRing 
                 percent={todayHabits.total > 0 ? Math.round((todayHabits.completed / todayHabits.total) * 100) : 0}
                 color="#2BD192"
@@ -158,9 +245,50 @@ export const Dashboard: React.FC = () => {
                 {todayHabits.completed} of {todayHabits.total} habits completed today
               </p>
             </div>
+            
+            <div className="space-y-3">
+              {store.dreams.flatMap(dream => 
+                dream.enablers.flatMap((enabler: any) => 
+                  enabler.dailyHabits.map((habit: any) => {
+                    const today = new Date().toISOString().split('T')[0];
+                    const isCompletedToday = habit.history.includes(today);
+                    
+                    return (
+                      <div key={habit.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                        <div className={`w-3 h-3 rounded-full ${isCompletedToday ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-[#374151]">{habit.detail}</p>
+                          <p className="text-xs text-gray-500">
+                            {habit.streak} day streak • {enabler.name}
+                          </p>
+                        </div>
+                        {isCompletedToday && (
+                          <CheckCircle2 className="h-5 w-5 text-green-500" />
+                        )}
+                      </div>
+                    );
+                  })
+                )
+              )}
+            </div>
           </CardContent>
         </Card>
       )}
+
+      {/* Data Storage Note */}
+      <Card className="border-2 border-blue-200 bg-blue-50">
+        <CardContent className="p-4">
+          <div className="flex items-start space-x-3">
+            <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+            <div>
+              <h4 className="font-semibold text-blue-800 mb-1">📊 Data Storage</h4>
+              <p className="text-sm text-blue-700">
+                Your goals are currently stored locally. Connect to Supabase to sync across devices and enable real-time collaboration.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

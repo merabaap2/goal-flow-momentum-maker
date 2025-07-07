@@ -54,7 +54,7 @@ export const WizardLayout: React.FC<WizardLayoutProps> = ({
       </div>
 
       {/* Main content area */}
-      <div className="flex-1 px-4 py-2 overflow-hidden">
+      <div className="flex-1 px-4 py-2 overflow-y-auto">
         {/* Title section */}
         <div className="text-center mb-4 flex-shrink-0">
           <h1 className="text-xl font-bold text-[#374151] mb-2">{title}</h1>
@@ -62,7 +62,7 @@ export const WizardLayout: React.FC<WizardLayoutProps> = ({
         </div>
 
         {/* Content */}
-        <div className="h-full overflow-hidden">
+        <div className="pb-4">
           {children}
         </div>
       </div>

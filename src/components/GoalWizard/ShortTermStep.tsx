@@ -235,7 +235,7 @@ export const ShortTermStep: React.FC<ShortTermStepProps> = ({ data, onNext, onBa
                           value={goal}
                           onChange={(e) => updateGoal(mediumGoal, shortGoalIndex, e.target.value)}
                           className={cn(
-                            "min-h-[90px] max-h-[120px] resize-none border-2 rounded-lg focus:border-[#2BD192] transition-all duration-200 text-sm overflow-y-auto",
+                            "min-h-[60px] resize-none border-2 rounded-lg focus:border-[#2BD192] transition-all duration-200 text-sm",
                             goal.trim() && "border-[#2BD192] bg-green-50/50"
                           )}
                         />

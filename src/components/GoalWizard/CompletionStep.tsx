@@ -3,21 +3,21 @@ import { AppButton } from '../ui/AppButton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Check, Target, Calendar, Zap } from 'lucide-react';
 import { WizardData } from './GoalWizard';
-
 interface CompletionStepProps {
   data: WizardData;
   onComplete: () => void;
   onBack: () => void;
 }
-
-export const CompletionStep: React.FC<CompletionStepProps> = ({ data, onComplete, onBack }) => {
+export const CompletionStep: React.FC<CompletionStepProps> = ({
+  data,
+  onComplete,
+  onBack
+}) => {
   const totalDreams = data.bucketList.length;
   const totalMediumGoals = Object.values(data.mediumTermGoals).reduce((acc, goals) => acc + goals.length, 0);
   const totalShortGoals = Object.values(data.shortTermGoals).reduce((acc, goals) => acc + goals.length, 0);
   const totalDailyHabits = Object.values(data.dailyHabits).reduce((acc, habits) => acc + habits.length, 0);
-
-  return (
-    <div className="space-y-6">
+  return <div className="space-y-6">
       <div className="text-center space-y-4">
         <div className="text-8xl mb-4">🎉</div>
         <h2 className="text-3xl font-bold text-[#374151]">Congratulations!</h2>
@@ -75,26 +75,18 @@ export const CompletionStep: React.FC<CompletionStepProps> = ({ data, onComplete
             </div>
             
             <div className="space-y-3">
-              {data.bucketList.map((dream, index) => (
-                <div key={index} className="border-l-4 border-[#2BD192] pl-4">
+              {data.bucketList.map((dream, index) => <div key={index} className="border-l-4 border-[#2BD192] pl-4">
                   <h4 className="font-semibold text-[#374151] mb-2">🌟 {dream}</h4>
                   
-                  {data.mediumTermGoals[dream] && data.mediumTermGoals[dream].length > 0 && (
-                    <div className="ml-4 space-y-1">
-                      {data.mediumTermGoals[dream].slice(0, 2).map((goal, goalIndex) => (
-                        <div key={goalIndex} className="text-sm text-gray-600">
+                  {data.mediumTermGoals[dream] && data.mediumTermGoals[dream].length > 0 && <div className="ml-4 space-y-1">
+                      {data.mediumTermGoals[dream].slice(0, 2).map((goal, goalIndex) => <div key={goalIndex} className="text-sm text-gray-600">
                           🎯 {goal}
-                        </div>
-                      ))}
-                      {data.mediumTermGoals[dream].length > 2 && (
-                        <div className="text-sm text-gray-500">
+                        </div>)}
+                      {data.mediumTermGoals[dream].length > 2 && <div className="text-sm text-gray-500">
                           ... and {data.mediumTermGoals[dream].length - 2} more goals
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))}
+                        </div>}
+                    </div>}
+                </div>)}
             </div>
           </div>
         </CardContent>
@@ -128,17 +120,10 @@ export const CompletionStep: React.FC<CompletionStepProps> = ({ data, onComplete
       </div>
 
       <div className="flex justify-between pt-6">
-        <AppButton variant="outline" onClick={onBack}>
-          ← Back to Review
-        </AppButton>
-        <AppButton
-          onClick={onComplete}
-          size="lg"
-          className="bg-gradient-to-r from-[#2BD192] to-[#05C2FF] hover:from-[#2BD192]/90 hover:to-[#05C2FF]/90 text-white border-0 shadow-lg"
-        >
+        
+        <AppButton onClick={onComplete} size="lg" className="bg-gradient-to-r from-[#2BD192] to-[#05C2FF] hover:from-[#2BD192]/90 hover:to-[#05C2FF]/90 text-white border-0 shadow-lg">
           🚀 Start Your Journey!
         </AppButton>
       </div>
-    </div>
-  );
+    </div>;
 };

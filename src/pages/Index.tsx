@@ -1,7 +1,7 @@
 
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { AppProvider, useApp } from '../context/AppContext';
+import { useApp } from '../context/AppContext';
 import { SplashLoader } from '../components/SplashLoader';
 import { Dashboard } from '../components/Dashboard';
 import { CheckinsTab } from '../components/CheckinsTab';
@@ -87,11 +87,7 @@ const HomeTabs: React.FC = () => {
 };
 
 const Index: React.FC = () => {
-  return (
-    <AppProvider>
-      <HomeTabs />
-    </AppProvider>
-  );
+  return <HomeTabs />;
 };
 
 export default Index;

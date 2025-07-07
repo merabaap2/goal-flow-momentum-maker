@@ -171,32 +171,28 @@ export const MediumTermStep: React.FC<MediumTermStepProps> = ({ data, onNext, on
                 <div className="flex-1 min-w-0">
                   <CardTitle 
                     className={cn(
-                      "text-base text-[#374151] mb-1 cursor-pointer hover:text-[#2BD192] transition-colors",
-                      expandedItems[bucketItem] || bucketItem.length <= 50 ? '' : 'line-clamp-2'
+                      "text-base text-[#374151] mb-1 cursor-pointer hover:text-[#2BD192] transition-colors pr-2",
+                      !expandedItems[bucketItem] && 'line-clamp-1'
                     )}
                     onClick={() => {
-                      if (bucketItem.length > 50) {
-                        setExpandedItems(prev => ({
-                          ...prev,
-                          [bucketItem]: !prev[bucketItem]
-                        }));
-                      }
+                      setExpandedItems(prev => ({
+                        ...prev,
+                        [bucketItem]: !prev[bucketItem]
+                      }));
                     }}
-                    title={bucketItem.length > 50 ? "Click to expand/collapse" : undefined}
+                    title="Click to expand/collapse"
                   >
                     🌟 {bucketItem}
                   </CardTitle>
-                  {bucketItem.length > 50 && (
-                    <button
-                      onClick={() => setExpandedItems(prev => ({
-                        ...prev,
-                        [bucketItem]: !prev[bucketItem]
-                      }))}
-                      className="text-xs text-gray-500 hover:text-[#2BD192] transition-colors"
-                    >
-                      {expandedItems[bucketItem] ? "Show less" : "Show more..."}
-                    </button>
-                  )}
+                  <button
+                    onClick={() => setExpandedItems(prev => ({
+                      ...prev,
+                      [bucketItem]: !prev[bucketItem]
+                    }))}
+                    className="text-xs text-gray-500 hover:text-[#2BD192] transition-colors"
+                  >
+                    {expandedItems[bucketItem] ? "Show less" : "Show more..."}
+                  </button>
                 </div>
                 <div className="flex-shrink-0">
                   <AppButton

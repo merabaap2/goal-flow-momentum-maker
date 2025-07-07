@@ -119,8 +119,7 @@ export const CompletionStep: React.FC<CompletionStepProps> = ({
         </div>
       </div>
 
-      <div className="flex justify-between pt-6">
-        
+      <div className="flex justify-center pt-6 pb-8">
         <AppButton onClick={onComplete} size="lg" className="bg-gradient-to-r from-[#2BD192] to-[#05C2FF] hover:from-[#2BD192]/90 hover:to-[#05C2FF]/90 text-white border-0 shadow-lg">
           🚀 Start Your Journey!
         </AppButton>

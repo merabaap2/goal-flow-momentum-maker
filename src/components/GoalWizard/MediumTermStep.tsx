@@ -153,7 +153,7 @@ export const MediumTermStep: React.FC<MediumTermStepProps> = ({ data, onNext, on
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pb-4">
       <div className="text-center space-y-3">
         <div className="text-6xl mb-4">🎯</div>
         <h2 className="text-2xl font-bold text-[#374151]">What goals will help you achieve your dreams?</h2>

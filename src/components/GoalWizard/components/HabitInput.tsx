@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -18,16 +18,51 @@ export const HabitInput: React.FC<HabitInputProps> = ({
   onRemove,
   showRemove,
 }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (inputRef.current && value) {
+      const element = inputRef.current;
+      setIsOverflowing(element.scrollWidth > element.clientWidth);
+    }
+  }, [value]);
+
+  const handleClick = () => {
+    if (isOverflowing && document.activeElement !== inputRef.current) {
+      setIsExpanded(!isExpanded);
+    }
+  };
+
+  const handleFocus = () => {
+    setIsExpanded(true);
+  };
+
+  const handleBlur = () => {
+    setIsExpanded(false);
+  };
+
   return (
     <div className="relative group">
       <Input
+        ref={inputRef}
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onClick={handleClick}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
         className={cn(
-          "h-12 border-2 rounded-lg focus:border-[#2BD192] transition-all duration-200 truncate",
-          value.trim() && "border-[#2BD192] bg-green-50/50"
+          "border-2 rounded-lg focus:border-[#2BD192] transition-all duration-200 cursor-pointer",
+          isExpanded ? "h-auto min-h-[3rem] whitespace-normal" : "h-12 truncate",
+          value.trim() && "border-[#2BD192] bg-green-50/50",
+          isOverflowing && !isExpanded && "hover:bg-gray-50"
         )}
+        style={{
+          wordWrap: isExpanded ? 'break-word' : 'normal',
+          whiteSpace: isExpanded ? 'normal' : 'nowrap'
+        }}
       />
       {showRemove && onRemove && (
         <button

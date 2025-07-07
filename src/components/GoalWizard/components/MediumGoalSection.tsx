@@ -58,7 +58,7 @@ export const MediumGoalSection: React.FC<MediumGoalSectionProps> = ({
           <HabitInput
             key={habitIndex}
             value={habit}
-            placeholder={`Daily habit ${habitIndex + 1} for "${mediumGoal}"...`}
+            placeholder={`Daily habit ${habitIndex + 1}...`}
             onChange={(value) => onUpdateHabit(habitIndex, value)}
             onRemove={() => onRemoveHabit(habitIndex)}
             showRemove={habits.length > 1}

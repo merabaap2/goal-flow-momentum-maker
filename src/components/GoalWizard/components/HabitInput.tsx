@@ -25,7 +25,7 @@ export const HabitInput: React.FC<HabitInputProps> = ({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className={cn(
-          "h-12 border-2 rounded-lg focus:border-[#2BD192] transition-all duration-200 text-ellipsis overflow-hidden whitespace-nowrap",
+          "h-12 border-2 rounded-lg focus:border-[#2BD192] transition-all duration-200 truncate",
           value.trim() && "border-[#2BD192] bg-green-50/50"
         )}
       />

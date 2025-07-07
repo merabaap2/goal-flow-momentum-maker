@@ -63,7 +63,7 @@ export const ShortTermStep: React.FC<ShortTermStepProps> = ({ data, onNext, onBa
   const generateSuggestions = async (mediumGoal: string) => {
     setIsGeneratingSuggestions(true);
     try {
-      const prompt = `For the medium-term goal: "${mediumGoal}", what are 5 specific short-term actions someone can take in the next 3-6 months? Focus on practical, achievable steps that build momentum.`;
+      const prompt = `For the medium-term goal: "${mediumGoal}", what are 3 specific DAILY actions someone can take to achieve this goal? Think of small, actionable habits that can be done every day or week. Focus on granular, specific actions that build toward the medium-term goal.`;
       
       const aiSuggestions = await generateGeminiSuggestions(prompt, `Medium-term goal: ${mediumGoal}`);
       

@@ -21,16 +21,10 @@ export const ShortTermStep: React.FC<ShortTermStepProps> = ({ data, onNext, onBa
   const [isGeneratingSuggestions, setIsGeneratingSuggestions] = useState(false);
   const [expandedItems, setExpandedItems] = useState<{ [key: string]: boolean }>({});
 
-  // Group medium-term goals by bucket list items
-  const goalsByBucket: { [bucketItem: string]: string[] } = {};
-  Object.entries(data.mediumTermGoals || {}).forEach(([bucketItem, goals]) => {
-    goalsByBucket[bucketItem] = goals;
-  });
-
   useEffect(() => {
     // Initialize goals for each medium-term goal
     const initialGoals: { [key: string]: string[] } = {};
-    Object.values(goalsByBucket).flat().forEach(goal => {
+    Object.values(data.mediumTermGoals || {}).flat().forEach(goal => {
       if (!shortTermGoals[goal]) {
         initialGoals[goal] = [''];
       }
@@ -38,7 +32,7 @@ export const ShortTermStep: React.FC<ShortTermStepProps> = ({ data, onNext, onBa
     if (Object.keys(initialGoals).length > 0) {
       setShortTermGoals(prev => ({ ...prev, ...initialGoals }));
     }
-  }, [goalsByBucket]);
+  }, [data.mediumTermGoals]);
 
   const addGoal = (mediumGoal: string) => {
     setShortTermGoals(prev => ({
@@ -173,105 +167,108 @@ export const ShortTermStep: React.FC<ShortTermStepProps> = ({ data, onNext, onBa
         </p>
       </div>
 
-      <div className="space-y-4">
-        {Object.values(goalsByBucket).flat().map((mediumGoal, goalIndex) => (
-          <Card key={goalIndex} className="border-2 border-gray-200">
-            <CardHeader className="pb-3">
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex-1 min-w-0">
-                  <CardTitle 
-                    className={cn(
-                      "text-base text-[#374151] mb-1 cursor-pointer hover:text-[#2BD192] transition-colors pr-2",
-                      !expandedItems[mediumGoal] && 'line-clamp-1'
-                    )}
-                    onClick={() => {
-                      setExpandedItems(prev => ({
-                        ...prev,
-                        [mediumGoal]: !prev[mediumGoal]
-                      }));
-                    }}
-                    title="Click to expand/collapse"
-                  >
-                    🎯 {mediumGoal}
-                  </CardTitle>
-                  <button
-                    onClick={() => setExpandedItems(prev => ({
-                      ...prev,
-                      [mediumGoal]: !prev[mediumGoal]
-                    }))}
-                    className="text-xs text-gray-500 hover:text-[#2BD192] transition-colors"
-                  >
-                    {expandedItems[mediumGoal] ? "Show less" : "Show more..."}
-                  </button>
-                </div>
-                <div className="flex-shrink-0">
-                  <AppButton
-                    variant="outline"
-                    size="sm"
-                    onClick={() => generateSuggestions(mediumGoal)}
-                    disabled={isGeneratingSuggestions}
-                    className="text-xs px-3 py-1 h-8"
-                  >
-                    <Lightbulb className="h-3 w-3 text-yellow-500" />
-                  </AppButton>
-                </div>
-              </div>
-            </CardHeader>
-            
-            <CardContent className="space-y-3">
-              {suggestions[mediumGoal] && suggestions[mediumGoal].length > 0 && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Sparkles className="h-3 w-3 text-blue-600" />
-                    <span className="font-medium text-blue-800 text-xs">Quick Ideas:</span>
-                  </div>
-                  <div className="grid grid-cols-1 gap-2">
-                    {suggestions[mediumGoal].map((suggestion, index) => (
-                      <button
-                        key={index}
-                        onClick={() => applySuggestion(mediumGoal, suggestion)}
-                        className="text-left p-3 bg-white border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors duration-200 text-xs leading-relaxed"
+      <div className="space-y-6">
+        {Object.entries(data.mediumTermGoals || {}).map(([bucketItem, mediumGoals]) => (
+          <div key={bucketItem} className="space-y-4">
+            {/* Bucket List Heading */}
+            <div className="border-b border-gray-200 pb-2">
+              <h3 
+                className={cn(
+                  "text-lg font-semibold text-[#374151] cursor-pointer hover:text-[#2BD192] transition-colors",
+                  !expandedItems[bucketItem] && 'line-clamp-1'
+                )}
+                onClick={() => {
+                  setExpandedItems(prev => ({
+                    ...prev,
+                    [bucketItem]: !prev[bucketItem]
+                  }));
+                }}
+                title="Click to expand/collapse"
+              >
+                🌟 {bucketItem}
+              </h3>
+            </div>
+
+            {/* Medium-term goals under this bucket item */}
+            {mediumGoals.map((mediumGoal, goalIndex) => (
+              <Card key={goalIndex} className="border-2 border-gray-200 ml-4">
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <CardTitle className="text-base text-[#374151] mb-1">
+                        🎯 {mediumGoal}
+                      </CardTitle>
+                    </div>
+                    <div className="flex-shrink-0">
+                      <AppButton
+                        variant="outline"
+                        size="sm"
+                        onClick={() => generateSuggestions(mediumGoal)}
+                        disabled={isGeneratingSuggestions}
+                        className="text-xs px-3 py-1 h-8"
                       >
-                        <div>• {suggestion}</div>
-                      </button>
+                        <Lightbulb className="h-3 w-3 text-yellow-500" />
+                      </AppButton>
+                    </div>
+                  </div>
+                </CardHeader>
+                
+                <CardContent className="space-y-3">
+                  {suggestions[mediumGoal] && suggestions[mediumGoal].length > 0 && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <Sparkles className="h-3 w-3 text-blue-600" />
+                        <span className="font-medium text-blue-800 text-xs">Quick Ideas:</span>
+                      </div>
+                      <div className="grid grid-cols-1 gap-2">
+                        {suggestions[mediumGoal].map((suggestion, index) => (
+                          <button
+                            key={index}
+                            onClick={() => applySuggestion(mediumGoal, suggestion)}
+                            className="text-left p-3 bg-white border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors duration-200 text-xs leading-relaxed"
+                          >
+                            <div>• {suggestion}</div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="space-y-2">
+                    {(shortTermGoals[mediumGoal] || []).map((goal, goalIndex) => (
+                      <div key={goalIndex} className="relative group">
+                        <Textarea
+                          placeholder={`Short-term action ${goalIndex + 1} for ${mediumGoal}...`}
+                          value={goal}
+                          onChange={(e) => updateGoal(mediumGoal, goalIndex, e.target.value)}
+                          className={cn(
+                            "min-h-[60px] resize-none border-2 rounded-lg focus:border-[#2BD192] transition-all duration-200 text-sm",
+                            goal.trim() && "border-[#2BD192] bg-green-50/50"
+                          )}
+                        />
+                        {(shortTermGoals[mediumGoal] || []).length > 1 && (
+                          <button
+                            onClick={() => removeGoal(mediumGoal, goalIndex)}
+                            className="absolute top-2 right-2 p-1 text-red-500 hover:bg-red-50 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </button>
+                        )}
+                      </div>
                     ))}
                   </div>
-                </div>
-              )}
 
-              <div className="space-y-2">
-                {(shortTermGoals[mediumGoal] || []).map((goal, goalIndex) => (
-                  <div key={goalIndex} className="relative group">
-                    <Textarea
-                      placeholder={`Short-term action ${goalIndex + 1} for ${mediumGoal}...`}
-                      value={goal}
-                      onChange={(e) => updateGoal(mediumGoal, goalIndex, e.target.value)}
-                      className={cn(
-                        "min-h-[60px] resize-none border-2 rounded-lg focus:border-[#2BD192] transition-all duration-200 text-sm",
-                        goal.trim() && "border-[#2BD192] bg-green-50/50"
-                      )}
-                    />
-                    {(shortTermGoals[mediumGoal] || []).length > 1 && (
-                      <button
-                        onClick={() => removeGoal(mediumGoal, goalIndex)}
-                        className="absolute top-2 right-2 p-1 text-red-500 hover:bg-red-50 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200"
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
-
-              <button
-                onClick={() => addGoal(mediumGoal)}
-                className="w-full p-3 border-2 border-dashed border-[#2BD192] rounded-lg text-[#2BD192] hover:bg-green-50 transition-all duration-200 flex items-center justify-center space-x-2 text-sm"
-              >
-                <Plus className="h-3 w-3" />
-                <span>Add short-term action</span>
-              </button>
-            </CardContent>
-          </Card>
+                  <button
+                    onClick={() => addGoal(mediumGoal)}
+                    className="w-full p-3 border-2 border-dashed border-[#2BD192] rounded-lg text-[#2BD192] hover:bg-green-50 transition-all duration-200 flex items-center justify-center space-x-2 text-sm"
+                  >
+                    <Plus className="h-3 w-3" />
+                    <span>Add short-term action</span>
+                  </button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         ))}
       </div>
 

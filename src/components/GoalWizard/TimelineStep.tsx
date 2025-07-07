@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AppButton } from '../ui/AppButton';
 import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Calendar, Clock, Target } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { WizardData } from './GoalWizard';
@@ -21,18 +22,29 @@ const timelineOptions = [
 export const TimelineStep: React.FC<TimelineStepProps> = ({ data, onNext, onBack }) => {
   const [selectedTimeline, setSelectedTimeline] = useState<number>(data.timeline || 10);
   const [customTimeline, setCustomTimeline] = useState<string>('');
-  const [showCustom, setShowCustom] = useState(false);
+  const [showCustomDialog, setShowCustomDialog] = useState(false);
+  const [isCustomSelected, setIsCustomSelected] = useState(false);
 
-  const handleNext = () => {
-    const timeline = showCustom && customTimeline ? parseInt(customTimeline) : selectedTimeline;
+  const handlePresetSelect = (years: number) => {
+    setSelectedTimeline(years);
+    setIsCustomSelected(false);
+    // Automatically proceed with preset selection
+    onNext(years);
+  };
+
+  const handleCustomConfirm = () => {
+    const timeline = parseInt(customTimeline);
     if (timeline && timeline > 0) {
+      setSelectedTimeline(timeline);
+      setIsCustomSelected(true);
+      setShowCustomDialog(false);
       onNext(timeline);
     }
   };
 
-  const isValid = showCustom ? 
-    customTimeline && parseInt(customTimeline) > 0 : 
-    selectedTimeline > 0;
+  const openCustomDialog = () => {
+    setShowCustomDialog(true);
+  };
 
   return (
     <div className="space-y-6">
@@ -50,16 +62,8 @@ export const TimelineStep: React.FC<TimelineStepProps> = ({ data, onNext, onBack
         {timelineOptions.slice(0, 2).map((option) => (
           <Card 
             key={option.years}
-            className={cn(
-              "cursor-pointer transition-all duration-200 hover:shadow-lg border-2 h-28",
-              selectedTimeline === option.years && !showCustom
-                ? "border-[#2BD192] bg-green-50 shadow-md" 
-                : "border-gray-200 hover:border-[#2BD192]"
-            )}
-            onClick={() => {
-              setSelectedTimeline(option.years);
-              setShowCustom(false);
-            }}
+            className="cursor-pointer transition-all duration-200 hover:shadow-lg border-2 h-28 border-gray-200 hover:border-[#2BD192]"
+            onClick={() => handlePresetSelect(option.years)}
           >
             <CardContent className="p-3 text-center h-full flex flex-col justify-center">
               <div className="text-xl mb-1">{option.icon}</div>
@@ -75,16 +79,8 @@ export const TimelineStep: React.FC<TimelineStepProps> = ({ data, onNext, onBack
         {timelineOptions.slice(2, 4).map((option) => (
           <Card 
             key={option.years}
-            className={cn(
-              "cursor-pointer transition-all duration-200 hover:shadow-lg border-2 h-28",
-              selectedTimeline === option.years && !showCustom
-                ? "border-[#2BD192] bg-green-50 shadow-md" 
-                : "border-gray-200 hover:border-[#2BD192]"
-            )}
-            onClick={() => {
-              setSelectedTimeline(option.years);
-              setShowCustom(false);
-            }}
+            className="cursor-pointer transition-all duration-200 hover:shadow-lg border-2 h-28 border-gray-200 hover:border-[#2BD192]"
+            onClick={() => handlePresetSelect(option.years)}
           >
             <CardContent className="p-3 text-center h-full flex flex-col justify-center">
               <div className="text-xl mb-1">{option.icon}</div>
@@ -95,35 +91,66 @@ export const TimelineStep: React.FC<TimelineStepProps> = ({ data, onNext, onBack
         ))}
       </div>
 
-      {/* Custom timeline spanning full width */}
+      {/* Custom timeline button spanning full width */}
       <Card 
-        className={cn(
-          "cursor-pointer transition-all duration-200 border-2 h-24",
-          showCustom 
-            ? "border-[#2BD192] bg-green-50" 
-            : "border-gray-200 hover:border-[#2BD192]"
-        )}
-        onClick={() => setShowCustom(true)}
+        className="cursor-pointer transition-all duration-200 border-2 h-24 border-gray-200 hover:border-[#2BD192]"
+        onClick={openCustomDialog}
       >
         <CardContent className="p-3 h-full flex flex-col justify-center">
-          <div className="flex items-center justify-center space-x-2 mb-2">
+          <div className="flex items-center justify-center space-x-2 mb-1">
             <Target className="h-4 w-4 text-[#2BD192]" />
             <h3 className="font-bold text-sm text-[#374151]">Custom Timeline</h3>
           </div>
-          <div className="flex items-center justify-center space-x-2">
-            <input
-              type="number"
-              placeholder="Enter years"
-              value={customTimeline}
-              onChange={(e) => setCustomTimeline(e.target.value)}
-              className="w-20 px-2 py-1 border border-gray-300 rounded-lg focus:border-[#2BD192] focus:outline-none text-center text-sm"
-              min="1"
-              max="50"
-            />
-            <span className="text-gray-600 text-sm font-medium">years</span>
-          </div>
+          <p className="text-gray-600 text-xs text-center">Set your own timeframe</p>
         </CardContent>
       </Card>
+
+      {/* Custom Timeline Dialog */}
+      <Dialog open={showCustomDialog} onOpenChange={setShowCustomDialog}>
+        <DialogContent className="sm:max-w-md bg-white z-50">
+          <DialogHeader>
+            <DialogTitle className="text-center text-lg font-bold text-[#374151]">
+              Custom Timeline
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="text-center">
+              <p className="text-gray-600 text-sm mb-4">
+                How many years do you want to give yourself?
+              </p>
+              <div className="flex items-center justify-center space-x-3">
+                <input
+                  type="number"
+                  placeholder="Enter years"
+                  value={customTimeline}
+                  onChange={(e) => setCustomTimeline(e.target.value)}
+                  className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:border-[#2BD192] focus:outline-none text-center"
+                  min="1"
+                  max="50"
+                  autoFocus
+                />
+                <span className="text-gray-600 font-medium">years</span>
+              </div>
+            </div>
+            <div className="flex justify-center space-x-3 pt-2">
+              <AppButton 
+                variant="outline" 
+                onClick={() => setShowCustomDialog(false)}
+                size="sm"
+              >
+                Cancel
+              </AppButton>
+              <AppButton
+                onClick={handleCustomConfirm}
+                disabled={!customTimeline || parseInt(customTimeline) <= 0}
+                size="sm"
+              >
+                OK
+              </AppButton>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {data.bucketList.length > 0 && (
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
@@ -144,16 +171,9 @@ export const TimelineStep: React.FC<TimelineStepProps> = ({ data, onNext, onBack
         </div>
       )}
 
-      <div className="flex justify-between pt-4">
+      <div className="flex justify-center pt-4">
         <AppButton variant="outline" onClick={onBack}>
           ← Back
-        </AppButton>
-        <AppButton
-          onClick={handleNext}
-          disabled={!isValid}
-          size="lg"
-        >
-          Continue →
         </AppButton>
       </div>
     </div>

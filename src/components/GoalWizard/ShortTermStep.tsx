@@ -151,9 +151,16 @@ export const ShortTermStep: React.FC<ShortTermStepProps> = ({ data, onNext, onBa
     }
   };
 
+  // Debug validation
+  console.log('shortTermGoals:', shortTermGoals);
+  console.log('Object.keys(shortTermGoals):', Object.keys(shortTermGoals));
+  console.log('Object.values(shortTermGoals):', Object.values(shortTermGoals));
+  
   const isValid = Object.keys(shortTermGoals).length > 0 && Object.values(shortTermGoals).some(goals => 
     goals.some(goal => goal.trim().length > 0)
   );
+  
+  console.log('isValid:', isValid);
 
   const handleNext = () => {
     const cleanedGoals: { [key: string]: string[] } = {};

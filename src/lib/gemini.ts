@@ -13,11 +13,11 @@ export const generateGeminiSuggestions = async (prompt: string, context?: string
         messages: [
           {
             role: 'system',
-            content: 'You are a concise goal coach. Provide short, actionable suggestions. Each suggestion must be maximum 8-10 words. Think Gen Z - quick and punchy!'
+            content: 'You are a concise goal coach. Provide actionable suggestions in exactly 2 lines each. First line: main action (8-12 words). Second line: specific detail or benefit (8-12 words). Keep it practical and engaging for Gen Z users.'
           },
           {
             role: 'user',
-            content: `Goal: "${context?.replace('User\'s dream: ', '') || prompt}"\n\nGive me 5 super short, actionable steps to achieve this. Each suggestion must be 8-10 words max. Format: ["Short action 1", "Short action 2", "Short action 3", "Short action 4", "Short action 5"]`
+            content: `Goal: "${context?.replace('User\'s dream: ', '') || prompt}"\n\nGive me 5 actionable steps. Each suggestion must be exactly 2 lines:\nLine 1: Main action (8-12 words)\nLine 2: Specific detail/benefit (8-12 words)\n\nFormat: ["Action 1\\nDetail 1", "Action 2\\nDetail 2", "Action 3\\nDetail 3", "Action 4\\nDetail 4", "Action 5\\nDetail 5"]`
           }
         ],
         temperature: 0.7,

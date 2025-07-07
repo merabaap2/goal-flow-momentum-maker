@@ -194,14 +194,14 @@ export const MediumTermStep: React.FC<MediumTermStepProps> = ({ data, onNext, on
                     <Sparkles className="h-3 w-3 text-blue-600" />
                     <span className="font-medium text-blue-800 text-xs">Quick Ideas:</span>
                   </div>
-                  <div className="grid grid-cols-1 gap-1">
+                  <div className="grid grid-cols-1 gap-2">
                     {suggestions[bucketItem].map((suggestion, index) => (
                       <button
                         key={index}
                         onClick={() => applySuggestion(bucketItem, suggestion)}
-                        className="text-left p-2 bg-white border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors duration-200 text-xs"
+                        className="text-left p-3 bg-white border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors duration-200 text-xs leading-relaxed"
                       >
-                        • {suggestion}
+                        <div className="whitespace-pre-line">• {suggestion}</div>
                       </button>
                     ))}
                   </div>

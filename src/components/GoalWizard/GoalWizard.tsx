@@ -37,8 +37,11 @@ export const GoalWizard: React.FC = () => {
   };
 
   const nextStep = () => {
+    console.log('Current step before nextStep:', currentStep);
     if (currentStep < totalSteps) {
-      setCurrentStep(currentStep + 1);
+      const newStep = currentStep + 1;
+      console.log('Moving to step:', newStep);
+      setCurrentStep(newStep);
     }
   };
 

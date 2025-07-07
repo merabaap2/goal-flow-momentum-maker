@@ -13,11 +13,11 @@ export const generateGeminiSuggestions = async (prompt: string, context?: string
         messages: [
           {
             role: 'system',
-            content: 'You are a goal coach. You MUST provide exactly 3 separate actionable suggestions. Each suggestion MUST be exactly 2 lines. Line 1: main action (12-15 words). Line 2: implementation detail or benefit (12-15 words). Always return exactly 3 suggestions in JSON array format.'
+            content: 'You MUST provide EXACTLY 3 separate suggestions. NO MORE, NO LESS. Each suggestion is 2 lines. Use this EXACT format: ["First suggestion line 1\\nFirst suggestion line 2", "Second suggestion line 1\\nSecond suggestion line 2", "Third suggestion line 1\\nThird suggestion line 2"]. CRITICAL: Always return valid JSON array with exactly 3 string elements.'
           },
           {
             role: 'user',
-            content: `Goal: "${context?.replace('User\'s dream: ', '') || prompt}"\n\nProvide exactly 3 different actionable suggestions. Each suggestion must have exactly 2 lines:\n\nLine 1: Main action (12-15 words)\nLine 2: Implementation detail or benefit (12-15 words)\n\nIMPORTANT: Return exactly 3 suggestions in this format: ["Action 1\\nImplementation 1", "Action 2\\nImplementation 2", "Action 3\\nImplementation 3"]`
+            content: `Goal: "${context?.replace('User\'s dream: ', '') || prompt}"\n\nYou MUST return EXACTLY 3 different suggestions in this EXACT format:\n\n["Suggestion 1 line 1 (12-15 words)\\nSuggestion 1 line 2 (12-15 words)", "Suggestion 2 line 1 (12-15 words)\\nSuggestion 2 line 2 (12-15 words)", "Suggestion 3 line 1 (12-15 words)\\nSuggestion 3 line 2 (12-15 words)"]\n\nIMPORTANT: Return ONLY the JSON array. No other text. Exactly 3 suggestions.`
           }
         ],
         temperature: 0.8,
@@ -38,33 +38,45 @@ export const generateGeminiSuggestions = async (prompt: string, context?: string
 
     // Try to parse JSON from the response
     try {
-      const jsonMatch = textContent.match(/\[.*?\]/s);
+      const cleanedResponse = textContent.replace(/```json|```/g, '').trim();
+      const jsonMatch = cleanedResponse.match(/\[.*?\]/s);
       if (jsonMatch) {
         const suggestions = JSON.parse(jsonMatch[0]);
         if (Array.isArray(suggestions) && suggestions.length >= 3) {
           return suggestions.slice(0, 3); // Ensure exactly 3 suggestions
+        } else if (Array.isArray(suggestions) && suggestions.length > 0) {
+          // If we got fewer than 3, duplicate and modify the existing ones
+          const result = [...suggestions];
+          while (result.length < 3) {
+            const randomIndex = Math.floor(Math.random() * suggestions.length);
+            result.push(suggestions[randomIndex]);
+          }
+          return result.slice(0, 3);
         }
       }
     } catch (parseError) {
-      // If JSON parsing fails, try to extract 3 distinct suggestions
-      const lines = textContent.split('\n')
-        .map(line => line.replace(/^[\d\-\*\.\s]+/, '').trim())
-        .filter(line => line.length > 10);
-      
-      // Group lines into sets of 2 for suggestions
-      const suggestions = [];
-      for (let i = 0; i < Math.min(6, lines.length); i += 2) {
-        if (i + 1 < lines.length) {
-          suggestions.push(`${lines[i]}\n${lines[i+1]}`);
-        }
-      }
-      return suggestions.slice(0, 3);
+      console.warn('JSON parsing failed, using fallback approach');
     }
 
-    return [];
+    // Enhanced fallback: Always generate exactly 3 suggestions
+    const goal = context?.replace('User\'s dream: ', '') || prompt || 'this goal';
+    const fallbackSuggestions = [
+      `Start learning essential skills for ${goal.toLowerCase()}\nFind courses, tutorials, or mentors to guide your learning`,
+      `Create a detailed step-by-step action plan for ${goal.toLowerCase()}\nBreak down the goal into smaller, manageable milestones`,
+      `Build a support network of people with similar goals\nConnect with communities and experts in this field`
+    ];
+    
+    return fallbackSuggestions;
+
   } catch (error) {
     console.error('Error generating Groq suggestions:', error);
-    return [];
+    // Even in error case, return 3 fallback suggestions
+    const goal = context?.replace('User\'s dream: ', '') || prompt || 'this goal';
+    return [
+      `Start learning essential skills for ${goal.toLowerCase()}\nFind courses, tutorials, or mentors to guide your learning`,
+      `Create a detailed step-by-step action plan for ${goal.toLowerCase()}\nBreak down the goal into smaller, manageable milestones`,
+      `Build a support network of people with similar goals\nConnect with communities and experts in this field`
+    ];
   }
 };
 

@@ -186,9 +186,9 @@ export const BucketListStep: React.FC<BucketListStepProps> = ({ data, onNext }) 
   );
 
   const renderAskingMoreState = () => (
-    <div className="space-y-6 animate-fade-in">
+    <div className="h-full flex flex-col space-y-4">
       {showEncouragement && (
-        <div className="bg-gradient-to-r from-green-400 to-blue-500 text-white rounded-xl p-4 text-center animate-scale-in">
+        <div className="bg-gradient-to-r from-green-400 to-blue-500 text-white rounded-xl p-4 text-center animate-scale-in flex-shrink-0">
           <Heart className="mx-auto h-6 w-6 mb-2" />
           <p className="font-semibold">
             {encouragingMessages[Math.floor(Math.random() * encouragingMessages.length)]}
@@ -196,7 +196,7 @@ export const BucketListStep: React.FC<BucketListStepProps> = ({ data, onNext }) 
         </div>
       )}
 
-      <div className="text-center">
+      <div className="text-center flex-shrink-0">
         <div className="text-4xl mb-4">🤔</div>
         <h2 className="text-lg font-bold text-[#374151] mb-2">Will this be enough?</h2>
         <p className="text-sm text-gray-600 px-2 mb-4">
@@ -207,7 +207,7 @@ export const BucketListStep: React.FC<BucketListStepProps> = ({ data, onNext }) 
         </p>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-3 flex-shrink-0">
         <AppButton
           onClick={addMore}
           variant="primary"
@@ -224,13 +224,13 @@ export const BucketListStep: React.FC<BucketListStepProps> = ({ data, onNext }) 
         </AppButton>
       </div>
 
-      {/* Show current list */}
-      <div className="bg-gradient-to-br from-green-50 to-blue-50 border border-green-200 rounded-xl p-4">
+      {/* Show current list - this is the scrollable section */}
+      <div className="bg-gradient-to-br from-green-50 to-blue-50 border border-green-200 rounded-xl p-4 flex-1 min-h-0">
         <h3 className="font-bold text-gray-800 text-sm mb-3 flex items-center">
           <Sparkles className="mr-2 h-4 w-4" />
           Your Amazing Bucket List:
         </h3>
-        <div className="max-h-48 overflow-y-auto space-y-2 pr-2">
+        <div className="h-full overflow-y-auto space-y-2 pr-2">
           {bucketList.map((item, index) => (
             <div key={index} className="flex items-center justify-between bg-white rounded-lg p-3 shadow-sm">
               <span className="text-sm text-gray-700 flex-1">

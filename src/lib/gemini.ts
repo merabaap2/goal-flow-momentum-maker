@@ -13,11 +13,11 @@ export const generateGeminiSuggestions = async (prompt: string, context?: string
         messages: [
           {
             role: 'system',
-            content: 'You MUST provide EXACTLY 3 separate suggestions. NO MORE, NO LESS. Each suggestion is 2 lines. Use this EXACT format: ["First suggestion line 1\\nFirst suggestion line 2", "Second suggestion line 1\\nSecond suggestion line 2", "Third suggestion line 1\\nThird suggestion line 2"]. CRITICAL: Always return valid JSON array with exactly 3 string elements.'
+            content: 'You MUST provide EXACTLY 3 suggestions. Each suggestion is STRICTLY 2 lines max. Line 1: 8-10 words max. Line 2: 8-10 words max. Keep it SHORT and concise. No exceptions unless absolutely critical information.'
           },
           {
             role: 'user',
-            content: `Goal: "${context?.replace('User\'s dream: ', '') || prompt}"\n\nYou MUST return EXACTLY 3 different suggestions in this EXACT format:\n\n["Suggestion 1 line 1 (12-15 words)\\nSuggestion 1 line 2 (12-15 words)", "Suggestion 2 line 1 (12-15 words)\\nSuggestion 2 line 2 (12-15 words)", "Suggestion 3 line 1 (12-15 words)\\nSuggestion 3 line 2 (12-15 words)"]\n\nIMPORTANT: Return ONLY the JSON array. No other text. Exactly 3 suggestions.`
+            content: `Goal: "${context?.replace('User\'s dream: ', '') || prompt}"\n\nReturn EXACTLY 3 short suggestions in this format:\n\n["Line 1 (8-10 words max)\\nLine 2 (8-10 words max)", "Line 1 (8-10 words max)\\nLine 2 (8-10 words max)", "Line 1 (8-10 words max)\\nLine 2 (8-10 words max)"]\n\nKEEP IT SHORT. Each line must be 8-10 words maximum. STRICTLY 2 lines per suggestion.`
           }
         ],
         temperature: 0.8,
@@ -58,24 +58,24 @@ export const generateGeminiSuggestions = async (prompt: string, context?: string
       console.warn('JSON parsing failed, using fallback approach');
     }
 
-    // Enhanced fallback: Always generate exactly 3 suggestions
+    // Enhanced fallback: Always generate exactly 3 SHORT suggestions
     const goal = context?.replace('User\'s dream: ', '') || prompt || 'this goal';
     const fallbackSuggestions = [
-      `Start learning essential skills for ${goal.toLowerCase()}\nFind courses, tutorials, or mentors to guide your learning`,
-      `Create a detailed step-by-step action plan for ${goal.toLowerCase()}\nBreak down the goal into smaller, manageable milestones`,
-      `Build a support network of people with similar goals\nConnect with communities and experts in this field`
+      `Start learning essential skills for ${goal.toLowerCase().split(' ').slice(0, 2).join(' ')}\nFind courses or mentors to guide you`,
+      `Create detailed action plan for ${goal.toLowerCase().split(' ').slice(0, 2).join(' ')}\nBreak goal into smaller manageable steps`,
+      `Build support network for ${goal.toLowerCase().split(' ').slice(0, 2).join(' ')}\nConnect with communities and like-minded people`
     ];
     
     return fallbackSuggestions;
 
   } catch (error) {
     console.error('Error generating Groq suggestions:', error);
-    // Even in error case, return 3 fallback suggestions
+    // Even in error case, return 3 SHORT fallback suggestions
     const goal = context?.replace('User\'s dream: ', '') || prompt || 'this goal';
     return [
-      `Start learning essential skills for ${goal.toLowerCase()}\nFind courses, tutorials, or mentors to guide your learning`,
-      `Create a detailed step-by-step action plan for ${goal.toLowerCase()}\nBreak down the goal into smaller, manageable milestones`,
-      `Build a support network of people with similar goals\nConnect with communities and experts in this field`
+      `Start learning skills for ${goal.toLowerCase().split(' ').slice(0, 2).join(' ')}\nFind courses or mentors nearby`,
+      `Create action plan for ${goal.toLowerCase().split(' ').slice(0, 2).join(' ')}\nBreak into smaller manageable steps`,
+      `Build support network for ${goal.toLowerCase().split(' ').slice(0, 2).join(' ')}\nConnect with communities and experts`
     ];
   }
 };

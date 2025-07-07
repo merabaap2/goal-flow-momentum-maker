@@ -151,26 +151,15 @@ export const ShortTermStep: React.FC<ShortTermStepProps> = ({ data, onNext, onBa
     }
   };
 
-  // Debug validation
-  console.log('shortTermGoals:', shortTermGoals);
-  console.log('Object.keys(shortTermGoals):', Object.keys(shortTermGoals));
-  console.log('Object.values(shortTermGoals):', Object.values(shortTermGoals));
-  
-  const isValid = Object.keys(shortTermGoals).length > 0 && Object.values(shortTermGoals).some(goals => 
-    goals.some(goal => goal.trim().length > 0)
-  );
-  
-  console.log('isValid:', isValid);
+  // Always allow continue since this is optional
+  const isValid = true;
 
   const handleNext = () => {
-    // Show a confirmation dialog or just update data without navigation
     const cleanedGoals: { [key: string]: string[] } = {};
     Object.keys(shortTermGoals).forEach(mediumGoal => {
       cleanedGoals[mediumGoal] = shortTermGoals[mediumGoal].filter(goal => goal.trim().length > 0);
     });
-    // Just update the data, don't navigate to next step
-    // onNext(cleanedGoals);
-    console.log('Short-term goals saved:', cleanedGoals);
+    onNext(cleanedGoals);
   };
 
   return (

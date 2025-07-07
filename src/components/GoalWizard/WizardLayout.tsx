@@ -23,43 +23,46 @@ export const WizardLayout: React.FC<WizardLayoutProps> = ({
   showBack = true
 }) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F4F6F8] via-white to-[#F4F6F8] p-4">
-      <div className="max-w-2xl mx-auto py-8">
-        {/* Header */}
-        <div className="text-center space-y-4 mb-8">
-          <div className="flex items-center justify-between">
-            {showBack && onBack ? (
-              <AppButton variant="ghost" onClick={onBack} className="p-2">
-                <ArrowLeft className="h-5 w-5" />
-              </AppButton>
-            ) : (
-              <div />
-            )}
-            <span className="text-sm font-medium text-gray-500">
-              {step} / {totalSteps}
-            </span>
-          </div>
-          
-          <h1 className="text-3xl font-bold text-[#374151]">{title}</h1>
-          <p className="text-gray-600">{description}</p>
-        </div>
+    <div className="w-full h-screen max-w-[360px] max-h-[800px] mx-auto bg-gradient-to-br from-[#F4F6F8] via-white to-[#F4F6F8] flex flex-col overflow-hidden">
+      {/* Header with step counter */}
+      <div className="flex items-center justify-between p-4 bg-white/80 backdrop-blur-md">
+        {showBack && onBack ? (
+          <button onClick={onBack} className="p-2 rounded-xl hover:bg-gray-100 transition-colors">
+            <ArrowLeft className="h-5 w-5 text-gray-600" />
+          </button>
+        ) : (
+          <div className="w-9" />
+        )}
+        
+        <span className="text-sm font-medium text-gray-500">
+          {step} / {totalSteps}
+        </span>
+      </div>
 
-        {/* Progress Dots */}
-        <div className="flex justify-center space-x-2 mb-8">
-          {Array.from({ length: totalSteps }, (_, i) => (
-            <div
-              key={i}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                i + 1 <= step
-                  ? 'bg-gradient-to-r from-[#2BD192] to-[#05C2FF] scale-110'
-                  : 'bg-gray-300'
-              }`}
-            />
-          ))}
+      {/* Progress dots */}
+      <div className="flex justify-center space-x-2 px-4 py-3">
+        {Array.from({ length: totalSteps }, (_, i) => (
+          <div
+            key={i}
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+              i + 1 <= step
+                ? 'bg-gradient-to-r from-[#2BD192] to-[#05C2FF]'
+                : 'bg-gray-300'
+            }`}
+          />
+        ))}
+      </div>
+
+      {/* Main content area */}
+      <div className="flex-1 px-6 py-4 overflow-hidden">
+        {/* Title section */}
+        <div className="text-center mb-6">
+          <h1 className="text-xl font-bold text-[#374151] mb-2">{title}</h1>
+          <p className="text-sm text-gray-600 leading-relaxed">{description}</p>
         </div>
 
         {/* Content */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="h-full overflow-y-auto">
           {children}
         </div>
       </div>

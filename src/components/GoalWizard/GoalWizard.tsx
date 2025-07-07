@@ -179,15 +179,24 @@ export const GoalWizard: React.FC = () => {
   ];
 
   return (
-    <WizardLayout
-      step={currentStep}
-      totalSteps={totalSteps}
-      title={stepTitles[currentStep - 1]}
-      description={stepDescriptions[currentStep - 1]}
-      onBack={currentStep > 1 ? prevStep : undefined}
-      showBack={currentStep > 1}
-    >
-      {renderStep()}
-    </WizardLayout>
+    <div className="relative">
+      <WizardLayout
+        step={currentStep}
+        totalSteps={totalSteps}
+        title={stepTitles[currentStep - 1]}
+        description={stepDescriptions[currentStep - 1]}
+        onBack={currentStep > 1 ? prevStep : undefined}
+        showBack={currentStep > 1}
+      >
+        {renderStep()}
+      </WizardLayout>
+      
+      {/* Bottom Navigation - Hidden during wizard */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-gray-200/50 z-50 max-w-[360px] mx-auto">
+        <div className="px-4 py-2 text-center">
+          <p className="text-xs text-gray-500">Goal Setup in Progress...</p>
+        </div>
+      </div>
+    </div>
   );
 };

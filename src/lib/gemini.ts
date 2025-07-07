@@ -17,7 +17,7 @@ export const generateGeminiSuggestions = async (prompt: string, context?: string
           },
           {
             role: 'user',
-            content: `Goal: "${context?.replace('User\'s dream: ', '') || prompt}"\n\nReturn EXACTLY 3 short suggestions as single paragraphs in this format:\n\n["Short paragraph 1 (15-20 words max)", "Short paragraph 2 (15-20 words max)", "Short paragraph 3 (15-20 words max)"]\n\nEach suggestion should be a flowing sentence that naturally wraps to 2 lines. No artificial line breaks.`
+            content: `Goal: "${context?.replace('User\'s dream: ', '') || prompt}"\n\nYou MUST return your response in this EXACT JSON format - no other text:\n\n["suggestion 1", "suggestion 2", "suggestion 3"]\n\nEach suggestion must be 15-20 words max and focus on daily actionable steps.`
           }
         ],
         temperature: 0.8,

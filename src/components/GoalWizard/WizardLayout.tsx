@@ -23,7 +23,7 @@ export const WizardLayout: React.FC<WizardLayoutProps> = ({
   showBack = true
 }) => {
   return (
-    <div className="w-full h-screen max-w-[360px] max-h-[800px] mx-auto bg-gradient-to-br from-[#F4F6F8] via-white to-[#F4F6F8] flex flex-col overflow-hidden">
+    <div className="w-full h-screen mx-auto bg-gradient-to-br from-[#F4F6F8] via-white to-[#F4F6F8] flex flex-col overflow-hidden">
       {/* Header with step counter */}
       <div className="flex items-center justify-between p-4 bg-white/80 backdrop-blur-md">
         {showBack && onBack ? (

@@ -173,94 +173,79 @@ export const ShortTermStep: React.FC<ShortTermStepProps> = ({ data, onNext, onBa
         </p>
       </div>
 
-      <div className="space-y-4">
-        {Object.entries(goalsByBucket).map(([bucketItem, mediumGoals], bucketIndex) => (
-          <Card key={bucketIndex} className="border-2 border-gray-200">
-            <CardHeader className="pb-3">
-              <div className="flex-1 min-w-0">
-                <CardTitle className="text-base text-[#374151] mb-1">
-                  🌟 {bucketItem}
-                </CardTitle>
+      <div className="space-y-6">
+        {Object.values(goalsByBucket).flat().map((mediumGoal, goalIndex) => (
+          <div key={goalIndex} className="bg-white border border-gray-200 rounded-lg p-4 space-y-4">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1">
+                <p className="text-gray-700 text-sm leading-relaxed">
+                  🎯 {mediumGoal}
+                </p>
               </div>
-            </CardHeader>
-            
-            <CardContent className="space-y-4">
-              {mediumGoals.map((mediumGoal, goalIndex) => (
-                <div key={goalIndex} className="bg-gray-50 rounded-lg p-4 space-y-3">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-medium text-[#374151] mb-1 line-clamp-2 pr-2">
-                        🎯 {mediumGoal}
-                      </h4>
-                    </div>
-                    <div className="flex-shrink-0">
-                      <AppButton
-                        variant="outline"
-                        size="sm"
-                        onClick={() => generateSuggestions(mediumGoal)}
-                        disabled={isGeneratingSuggestions}
-                        className="text-xs px-3 py-1 h-8"
-                      >
-                        <Lightbulb className="h-3 w-3 text-yellow-500" />
-                      </AppButton>
-                    </div>
-                  </div>
+              <AppButton
+                variant="outline"
+                size="sm"
+                onClick={() => generateSuggestions(mediumGoal)}
+                disabled={isGeneratingSuggestions}
+                className="px-3 py-1 h-8 text-xs border-[#2BD192] text-[#2BD192] hover:bg-green-50"
+              >
+                <Lightbulb className="h-3 w-3 mr-1" />
+                Get Ideas
+              </AppButton>
+            </div>
 
-                  {suggestions[mediumGoal] && suggestions[mediumGoal].length > 0 && (
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <Sparkles className="h-3 w-3 text-blue-600" />
-                        <span className="font-medium text-blue-800 text-xs">Quick Ideas:</span>
-                      </div>
-                      <div className="grid grid-cols-1 gap-2">
-                        {suggestions[mediumGoal].map((suggestion, index) => (
-                          <button
-                            key={index}
-                            onClick={() => applySuggestion(mediumGoal, suggestion)}
-                            className="text-left p-3 bg-white border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors duration-200 text-xs leading-relaxed"
-                          >
-                            <div>• {suggestion}</div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
+            {suggestions[mediumGoal] && suggestions[mediumGoal].length > 0 && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <div className="flex items-center space-x-2 mb-2">
+                  <Sparkles className="h-3 w-3 text-blue-600" />
+                  <span className="font-medium text-blue-800 text-xs">Quick Ideas:</span>
+                </div>
+                <div className="grid grid-cols-1 gap-2">
+                  {suggestions[mediumGoal].map((suggestion, index) => (
+                    <button
+                      key={index}
+                      onClick={() => applySuggestion(mediumGoal, suggestion)}
+                      className="text-left p-3 bg-white border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors duration-200 text-xs leading-relaxed"
+                    >
+                      <div>• {suggestion}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-3">
+              {(shortTermGoals[mediumGoal] || []).map((goal, shortGoalIndex) => (
+                <div key={shortGoalIndex} className="relative group">
+                  <Textarea
+                    placeholder={`Short-term action ${shortGoalIndex + 1} for "${mediumGoal}"...`}
+                    value={goal}
+                    onChange={(e) => updateGoal(mediumGoal, shortGoalIndex, e.target.value)}
+                    className={cn(
+                      "min-h-[60px] resize-none border-2 rounded-lg focus:border-[#2BD192] transition-all duration-200 text-sm",
+                      goal.trim() && "border-[#2BD192] bg-green-50/50"
+                    )}
+                  />
+                  {(shortTermGoals[mediumGoal] || []).length > 1 && (
+                    <button
+                      onClick={() => removeGoal(mediumGoal, shortGoalIndex)}
+                      className="absolute top-2 right-2 p-1 text-red-500 hover:bg-red-50 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </button>
                   )}
-
-                  <div className="space-y-2">
-                    {(shortTermGoals[mediumGoal] || []).map((goal, shortGoalIndex) => (
-                      <div key={shortGoalIndex} className="relative group">
-                        <Textarea
-                          placeholder={`Short-term action ${shortGoalIndex + 1} for ${mediumGoal}...`}
-                          value={goal}
-                          onChange={(e) => updateGoal(mediumGoal, shortGoalIndex, e.target.value)}
-                          className={cn(
-                            "min-h-[60px] resize-none border-2 rounded-lg focus:border-[#2BD192] transition-all duration-200 text-sm",
-                            goal.trim() && "border-[#2BD192] bg-green-50/50"
-                          )}
-                        />
-                        {(shortTermGoals[mediumGoal] || []).length > 1 && (
-                          <button
-                            onClick={() => removeGoal(mediumGoal, shortGoalIndex)}
-                            className="absolute top-2 right-2 p-1 text-red-500 hover:bg-red-50 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200"
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </button>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-
-                  <button
-                    onClick={() => addGoal(mediumGoal)}
-                    className="w-full p-3 border-2 border-dashed border-[#2BD192] rounded-lg text-[#2BD192] hover:bg-green-50 transition-all duration-200 flex items-center justify-center space-x-2 text-sm"
-                  >
-                    <Plus className="h-3 w-3" />
-                    <span>Add short-term action</span>
-                  </button>
                 </div>
               ))}
-            </CardContent>
-          </Card>
+            </div>
+
+            <button
+              onClick={() => addGoal(mediumGoal)}
+              className="w-full p-3 border-2 border-dashed border-[#2BD192] rounded-lg text-[#2BD192] hover:bg-green-50 transition-all duration-200 flex items-center justify-center space-x-2 text-sm"
+            >
+              <Plus className="h-3 w-3" />
+              <span>Add short-term action</span>
+            </button>
+          </div>
         ))}
       </div>
 

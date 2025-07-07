@@ -23,9 +23,9 @@ export const WizardLayout: React.FC<WizardLayoutProps> = ({
   showBack = true
 }) => {
   return (
-    <div className="w-full h-screen mx-auto bg-gradient-to-br from-[#F4F6F8] via-white to-[#F4F6F8] flex flex-col overflow-hidden">
+    <div className="w-full min-h-screen flex flex-col bg-gradient-to-br from-[#F4F6F8] via-white to-[#F4F6F8]">
       {/* Header with step counter */}
-      <div className="flex items-center justify-between p-4 bg-white/80 backdrop-blur-md">
+      <div className="flex items-center justify-between p-4 bg-white/80 backdrop-blur-md flex-shrink-0">
         {showBack && onBack ? (
           <button onClick={onBack} className="p-2 rounded-xl hover:bg-gray-100 transition-colors">
             <ArrowLeft className="h-5 w-5 text-gray-600" />
@@ -40,7 +40,7 @@ export const WizardLayout: React.FC<WizardLayoutProps> = ({
       </div>
 
       {/* Progress dots */}
-      <div className="flex justify-center space-x-2 px-4 py-3">
+      <div className="flex justify-center space-x-2 px-4 py-3 flex-shrink-0">
         {Array.from({ length: totalSteps }, (_, i) => (
           <div
             key={i}
@@ -54,15 +54,15 @@ export const WizardLayout: React.FC<WizardLayoutProps> = ({
       </div>
 
       {/* Main content area */}
-      <div className="flex-1 px-6 py-4 overflow-hidden">
+      <div className="flex-1 px-4 py-2 overflow-hidden">
         {/* Title section */}
-        <div className="text-center mb-6">
+        <div className="text-center mb-4 flex-shrink-0">
           <h1 className="text-xl font-bold text-[#374151] mb-2">{title}</h1>
           <p className="text-sm text-gray-600 leading-relaxed">{description}</p>
         </div>
 
         {/* Content */}
-        <div className="h-full overflow-y-auto">
+        <div className="h-full overflow-hidden">
           {children}
         </div>
       </div>

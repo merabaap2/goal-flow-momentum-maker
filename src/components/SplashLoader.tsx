@@ -20,7 +20,7 @@ export const SplashLoader: React.FC = () => {
             if (isFirstLaunch) {
               navigate('/wizard');
             } else {
-              navigate('/home');
+              navigate('/home?tab=dashboard');
             }
           }, 500);
           return 100;

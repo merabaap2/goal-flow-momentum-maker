@@ -88,7 +88,7 @@ export const GoalWizard: React.FC = () => {
     });
 
     setIsFirstLaunch(false);
-    navigate('/home');
+    navigate('/home?tab=dashboard');
   };
 
   const renderStep = () => {

@@ -230,7 +230,7 @@ export const BucketListStep: React.FC<BucketListStepProps> = ({ data, onNext }) 
           <Sparkles className="mr-2 h-4 w-4" />
           Your Amazing Bucket List:
         </h3>
-        <div className="space-y-2">
+        <div className="max-h-48 overflow-y-auto space-y-2 pr-2">
           {bucketList.map((item, index) => (
             <div key={index} className="flex items-center justify-between bg-white rounded-lg p-3 shadow-sm">
               <span className="text-sm text-gray-700 flex-1">
@@ -238,7 +238,7 @@ export const BucketListStep: React.FC<BucketListStepProps> = ({ data, onNext }) 
               </span>
               <button
                 onClick={() => removeBucketItem(index)}
-                className="text-red-500 hover:bg-red-50 rounded p-1 ml-2"
+                className="text-red-500 hover:bg-red-50 rounded p-1 ml-2 flex-shrink-0"
               >
                 <Trash2 className="h-3 w-3" />
               </button>

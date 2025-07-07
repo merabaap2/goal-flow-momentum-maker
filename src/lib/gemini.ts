@@ -13,11 +13,11 @@ export const generateGeminiSuggestions = async (prompt: string, context?: string
         messages: [
           {
             role: 'system',
-            content: 'You are a diverse goal coach. Provide 5 DIFFERENT types of actionable suggestions covering various aspects: skills, planning, resources, networking, and mindset. Each suggestion must be exactly 2 lines. First line: main action (8-12 words). Second line: specific detail or benefit (8-12 words). Make each suggestion unique and appealing to different personality types.'
+            content: 'You are a goal coach. Provide exactly 3 comprehensive actionable suggestions. Each suggestion MUST be exactly 2 complete lines. First line: detailed main action (12-15 words). Second line: specific benefit or implementation detail (12-15 words). Make each line substantial and fill the space completely.'
           },
           {
             role: 'user',
-            content: `Goal: "${context?.replace('User\'s dream: ', '') || prompt}"\n\nGive me exactly 5 diverse actionable steps that cover different approaches:\n1. Skill-building approach\n2. Planning/preparation approach  \n3. Resource/financial approach\n4. Social/networking approach\n5. Mindset/personal development approach\n\nEach suggestion exactly 2 lines:\nLine 1: Main action (8-12 words)\nLine 2: Specific detail/benefit (8-12 words)\n\nFormat: ["Action 1\\nDetail 1", "Action 2\\nDetail 2", "Action 3\\nDetail 3", "Action 4\\nDetail 4", "Action 5\\nDetail 5"]`
+            content: `Goal: "${context?.replace('User\'s dream: ', '') || prompt}"\n\nGive me exactly 3 comprehensive actionable steps. Each suggestion MUST be exactly 2 full lines:\n\nLine 1: Detailed main action (12-15 words)\nLine 2: Specific benefit or implementation detail (12-15 words)\n\nMake each line substantial and complete. Format: ["Detailed action 1\\nSpecific implementation detail 1", "Detailed action 2\\nSpecific implementation detail 2", "Detailed action 3\\nSpecific implementation detail 3"]`
           }
         ],
         temperature: 0.7,

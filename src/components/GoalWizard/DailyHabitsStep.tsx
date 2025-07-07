@@ -218,17 +218,14 @@ export const DailyHabitsStep: React.FC<DailyHabitsStepProps> = ({ data, onNext, 
         </CardContent>
       </Card>
 
-      <div className="flex justify-between pt-8 pb-8">
-        <AppButton variant="outline" onClick={onBack} className="border-2 border-gray-300">
-          ← Back
-        </AppButton>
+      <div className="flex justify-center pt-8 pb-12">
         <AppButton
           onClick={handleNext}
           disabled={!isValid}
           size="lg"
-          className="border-2"
+          className="border-2 px-8 py-3"
         >
-          Continue →
+          🚀 Start Your Journey
         </AppButton>
       </div>
     </div>

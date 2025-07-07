@@ -190,7 +190,7 @@ export const ShortTermStep: React.FC<ShortTermStepProps> = ({ data, onNext, onBa
                 <div key={goalIndex} className="bg-gray-50 rounded-lg p-4 space-y-3">
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-medium text-[#374151] mb-1 truncate pr-2">
+                      <h4 className="text-sm font-medium text-[#374151] mb-1 line-clamp-2 pr-2">
                         🎯 {mediumGoal}
                       </h4>
                     </div>

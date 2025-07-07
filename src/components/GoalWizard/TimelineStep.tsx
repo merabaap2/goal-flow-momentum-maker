@@ -15,8 +15,7 @@ const timelineOptions = [
   { years: 5, label: "5 Years", description: "Quick transformation", icon: "⚡" },
   { years: 10, label: "10 Years", description: "Balanced approach", icon: "🎯" },
   { years: 15, label: "15 Years", description: "Steady progress", icon: "🌱" },
-  { years: 20, label: "20 Years", description: "Lifetime journey", icon: "🌳" },
-  { years: 25, label: "25+ Years", description: "Generational impact", icon: "🏔️" }
+  { years: 20, label: "20 Years", description: "Lifetime journey", icon: "🌳" }
 ];
 
 export const TimelineStep: React.FC<TimelineStepProps> = ({ data, onNext, onBack }) => {
@@ -46,12 +45,13 @@ export const TimelineStep: React.FC<TimelineStepProps> = ({ data, onNext, onBack
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {timelineOptions.map((option) => (
+      {/* First row: 5 and 10 years */}
+      <div className="grid grid-cols-2 gap-4 mb-4">
+        {timelineOptions.slice(0, 2).map((option) => (
           <Card 
             key={option.years}
             className={cn(
-              "cursor-pointer transition-all duration-200 hover:shadow-lg border-2",
+              "cursor-pointer transition-all duration-200 hover:shadow-lg border-2 h-32",
               selectedTimeline === option.years && !showCustom
                 ? "border-[#2BD192] bg-green-50 shadow-md" 
                 : "border-gray-200 hover:border-[#2BD192]"
@@ -61,49 +61,62 @@ export const TimelineStep: React.FC<TimelineStepProps> = ({ data, onNext, onBack
               setShowCustom(false);
             }}
           >
-            <CardContent className="p-6 text-center">
-              <div className="text-4xl mb-3">{option.icon}</div>
-              <h3 className="font-bold text-lg text-[#374151] mb-2">{option.label}</h3>
-              <p className="text-gray-600 text-sm">{option.description}</p>
-              <div className="mt-3 flex items-center justify-center space-x-2 text-xs text-gray-500">
-                <Clock className="h-3 w-3" />
-                <span>{option.years} years to achieve your dreams</span>
-              </div>
+            <CardContent className="p-4 text-center h-full flex flex-col justify-center">
+              <div className="text-2xl mb-2">{option.icon}</div>
+              <h3 className="font-bold text-base text-[#374151] mb-1">{option.label}</h3>
+              <p className="text-gray-600 text-xs">{option.description}</p>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-300" />
-        </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="px-4 bg-white text-gray-500">or</span>
-        </div>
+      {/* Second row: 15 and 20 years */}
+      <div className="grid grid-cols-2 gap-4 mb-4">
+        {timelineOptions.slice(2, 4).map((option) => (
+          <Card 
+            key={option.years}
+            className={cn(
+              "cursor-pointer transition-all duration-200 hover:shadow-lg border-2 h-32",
+              selectedTimeline === option.years && !showCustom
+                ? "border-[#2BD192] bg-green-50 shadow-md" 
+                : "border-gray-200 hover:border-[#2BD192]"
+            )}
+            onClick={() => {
+              setSelectedTimeline(option.years);
+              setShowCustom(false);
+            }}
+          >
+            <CardContent className="p-4 text-center h-full flex flex-col justify-center">
+              <div className="text-2xl mb-2">{option.icon}</div>
+              <h3 className="font-bold text-base text-[#374151] mb-1">{option.label}</h3>
+              <p className="text-gray-600 text-xs">{option.description}</p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
+      {/* Custom timeline spanning full width */}
       <Card 
         className={cn(
-          "cursor-pointer transition-all duration-200 border-2",
+          "cursor-pointer transition-all duration-200 border-2 h-32",
           showCustom 
             ? "border-[#2BD192] bg-green-50" 
             : "border-gray-200 hover:border-[#2BD192]"
         )}
         onClick={() => setShowCustom(true)}
       >
-        <CardContent className="p-6">
-          <div className="flex items-center space-x-3 mb-4">
-            <Target className="h-6 w-6 text-[#2BD192]" />
-            <h3 className="font-bold text-lg text-[#374151]">Custom Timeline</h3>
+        <CardContent className="p-4 h-full flex flex-col justify-center">
+          <div className="flex items-center justify-center space-x-3 mb-3">
+            <Target className="h-5 w-5 text-[#2BD192]" />
+            <h3 className="font-bold text-base text-[#374151]">Custom Timeline</h3>
           </div>
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center justify-center space-x-3">
             <input
               type="number"
               placeholder="Enter years"
               value={customTimeline}
               onChange={(e) => setCustomTimeline(e.target.value)}
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:border-[#2BD192] focus:outline-none"
+              className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:border-[#2BD192] focus:outline-none text-center"
               min="1"
               max="50"
             />

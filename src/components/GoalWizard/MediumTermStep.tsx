@@ -166,22 +166,24 @@ export const MediumTermStep: React.FC<MediumTermStepProps> = ({ data, onNext, on
         {data.bucketList.map((bucketItem, bucketIndex) => (
           <Card key={bucketIndex} className="border-2 border-gray-200">
             <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <CardTitle className="text-base text-[#374151] mb-1 truncate">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex-1 min-w-0">
+                  <CardTitle className="text-base text-[#374151] mb-1 truncate pr-2">
                     🌟 {bucketItem}
                   </CardTitle>
                 </div>
-                <AppButton
-                  variant="outline"
-                  size="sm"
-                  onClick={() => generateSuggestions(bucketItem)}
-                  disabled={isGeneratingSuggestions}
-                  className="shrink-0 text-xs"
-                >
-                  <Lightbulb className="h-3 w-3 mr-1" />
-                  Ideas
-                </AppButton>
+                <div className="flex-shrink-0">
+                  <AppButton
+                    variant="outline"
+                    size="sm"
+                    onClick={() => generateSuggestions(bucketItem)}
+                    disabled={isGeneratingSuggestions}
+                    className="text-xs px-3 py-1 h-8"
+                  >
+                    <Lightbulb className="h-3 w-3 mr-1" />
+                    Ideas
+                  </AppButton>
+                </div>
               </div>
             </CardHeader>
             

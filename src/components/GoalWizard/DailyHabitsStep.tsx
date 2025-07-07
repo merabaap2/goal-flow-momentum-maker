@@ -202,7 +202,7 @@ export const DailyHabitsStep: React.FC<DailyHabitsStepProps> = ({ data, onNext, 
             <CardHeader className="pb-4">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <CardTitle className="text-lg text-[#374151] mb-2">
+                  <CardTitle className="text-lg text-[#374151] mb-2 line-clamp-2">
                     🎯 {mediumGoal}
                   </CardTitle>
                 </div>
@@ -211,10 +211,9 @@ export const DailyHabitsStep: React.FC<DailyHabitsStepProps> = ({ data, onNext, 
                   size="sm"
                   onClick={() => generateSuggestions(mediumGoal)}
                   disabled={isGeneratingSuggestions}
-                  className="shrink-0"
+                  className="shrink-0 border-yellow-500 hover:bg-yellow-50"
                 >
-                  <Lightbulb className="h-4 w-4 mr-2" />
-                  {isGeneratingSuggestions ? 'Generating...' : 'Get Ideas'}
+                  <Lightbulb className="h-4 w-4 text-yellow-500" />
                 </AppButton>
               </div>
             </CardHeader>

@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Plus, Trash2, Lightbulb, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { WizardData } from './GoalWizard';
+import { generateGeminiSuggestions } from '../../lib/gemini';
 
 interface ShortTermStepProps {
   data: WizardData;
@@ -62,13 +63,29 @@ export const ShortTermStep: React.FC<ShortTermStepProps> = ({ data, onNext, onBa
   const generateSuggestions = async (mediumGoal: string) => {
     setIsGeneratingSuggestions(true);
     try {
-      const mockSuggestions = getSampleSuggestions(mediumGoal);
-      setSuggestions(prev => ({
-        ...prev,
-        [mediumGoal]: mockSuggestions
-      }));
+      const prompt = `For the medium-term goal: "${mediumGoal}", what are 5 specific short-term actions someone can take in the next 3-6 months? Focus on practical, achievable steps that build momentum.`;
+      
+      const aiSuggestions = await generateGeminiSuggestions(prompt, `Medium-term goal: ${mediumGoal}`);
+      
+      if (aiSuggestions.length > 0) {
+        setSuggestions(prev => ({
+          ...prev,
+          [mediumGoal]: aiSuggestions
+        }));
+      } else {
+        const fallbackSuggestions = getSampleSuggestions(mediumGoal);
+        setSuggestions(prev => ({
+          ...prev,
+          [mediumGoal]: fallbackSuggestions
+        }));
+      }
     } catch (error) {
       console.error('Failed to generate suggestions:', error);
+      const fallbackSuggestions = getSampleSuggestions(mediumGoal);
+      setSuggestions(prev => ({
+        ...prev,
+        [mediumGoal]: fallbackSuggestions
+      }));
     } finally {
       setIsGeneratingSuggestions(false);
     }

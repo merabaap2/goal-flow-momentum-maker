@@ -1,6 +1,6 @@
 
 import React, { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AppProvider, useApp } from '../context/AppContext';
 import { SplashLoader } from '../components/SplashLoader';
 import { Dashboard } from '../components/Dashboard';
@@ -11,8 +11,16 @@ import { ProfileTab } from '../components/ProfileTab';
 import { SettingsTab } from '../components/SettingsTab';
 
 const HomeTabs: React.FC = () => {
-  const { loading } = useApp();
+  const { loading, isAuthenticated } = useApp();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // Redirect to auth if not authenticated
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      navigate('/auth');
+    }
+  }, [loading, isAuthenticated, navigate]);
 
   const getCurrentTab = () => {
     const params = new URLSearchParams(location.search);

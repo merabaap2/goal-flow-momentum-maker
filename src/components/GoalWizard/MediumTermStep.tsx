@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Plus, Trash2, Lightbulb, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { WizardData } from './GoalWizard';
+import { generateGeminiSuggestions } from '../../lib/gemini';
 
 interface MediumTermStepProps {
   data: WizardData;
@@ -56,14 +57,30 @@ export const MediumTermStep: React.FC<MediumTermStepProps> = ({ data, onNext, on
   const generateSuggestions = async (bucketItem: string) => {
     setIsGeneratingSuggestions(true);
     try {
-      // This would use Gemini API to generate suggestions
-      const mockSuggestions = getSampleSuggestions(bucketItem);
-      setSuggestions(prev => ({
-        ...prev,
-        [bucketItem]: mockSuggestions
-      }));
+      const prompt = `For the life goal/dream: "${bucketItem}", what are the most important medium-term goals someone should focus on to achieve this dream? Consider practical steps like skill development, resource building, networking, planning, etc.`;
+      
+      const aiSuggestions = await generateGeminiSuggestions(prompt, `User's dream: ${bucketItem}`);
+      
+      if (aiSuggestions.length > 0) {
+        setSuggestions(prev => ({
+          ...prev,
+          [bucketItem]: aiSuggestions
+        }));
+      } else {
+        // Fallback to sample suggestions if AI fails
+        const fallbackSuggestions = getSampleSuggestions(bucketItem);
+        setSuggestions(prev => ({
+          ...prev,
+          [bucketItem]: fallbackSuggestions
+        }));
+      }
     } catch (error) {
       console.error('Failed to generate suggestions:', error);
+      const fallbackSuggestions = getSampleSuggestions(bucketItem);
+      setSuggestions(prev => ({
+        ...prev,
+        [bucketItem]: fallbackSuggestions
+      }));
     } finally {
       setIsGeneratingSuggestions(false);
     }

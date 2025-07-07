@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Plus, Trash2, Lightbulb, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { WizardData } from './GoalWizard';
+import { generateGeminiSuggestions } from '../../lib/gemini';
 
 interface DailyHabitsStepProps {
   data: WizardData;
@@ -61,13 +62,29 @@ export const DailyHabitsStep: React.FC<DailyHabitsStepProps> = ({ data, onNext, 
   const generateSuggestions = async (mediumGoal: string) => {
     setIsGeneratingSuggestions(true);
     try {
-      const mockSuggestions = getSampleSuggestions(mediumGoal);
-      setSuggestions(prev => ({
-        ...prev,
-        [mediumGoal]: mockSuggestions
-      }));
+      const prompt = `For the goal: "${mediumGoal}", what are 5 small daily habits someone can do? Focus on micro-habits that take 5-30 minutes and build momentum. Be specific with actions like "Save $5 daily" or "Read for 15 minutes".`;
+      
+      const aiSuggestions = await generateGeminiSuggestions(prompt, `Goal context: ${mediumGoal}`);
+      
+      if (aiSuggestions.length > 0) {
+        setSuggestions(prev => ({
+          ...prev,
+          [mediumGoal]: aiSuggestions
+        }));
+      } else {
+        const fallbackSuggestions = getSampleSuggestions(mediumGoal);
+        setSuggestions(prev => ({
+          ...prev,
+          [mediumGoal]: fallbackSuggestions
+        }));
+      }
     } catch (error) {
       console.error('Failed to generate suggestions:', error);
+      const fallbackSuggestions = getSampleSuggestions(mediumGoal);
+      setSuggestions(prev => ({
+        ...prev,
+        [mediumGoal]: fallbackSuggestions
+      }));
     } finally {
       setIsGeneratingSuggestions(false);
     }

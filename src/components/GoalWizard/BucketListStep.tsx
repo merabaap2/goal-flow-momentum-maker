@@ -4,6 +4,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Plus, Trash2, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { WizardData } from './GoalWizard';
+import { analyzeGoalsWithGemini } from '../../lib/gemini';
 
 interface BucketListStepProps {
   data: WizardData;
@@ -13,6 +14,7 @@ interface BucketListStepProps {
 export const BucketListStep: React.FC<BucketListStepProps> = ({ data, onNext }) => {
   const [bucketList, setBucketList] = useState<string[]>(data.bucketList.length > 0 ? data.bucketList : ['']);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysis, setAnalysis] = useState<string>('');
 
   const addGoal = () => {
     if (bucketList.length < 10) {
@@ -36,11 +38,13 @@ export const BucketListStep: React.FC<BucketListStepProps> = ({ data, onNext }) 
     setIsAnalyzing(true);
     try {
       const validGoals = bucketList.filter(goal => goal.trim().length > 0);
-      // AI analysis can be added here using Gemini API
-      console.log('Analyzing goals with AI:', validGoals);
-      // For now, just proceed
+      if (validGoals.length > 0) {
+        const aiAnalysis = await analyzeGoalsWithGemini(validGoals, 10);
+        setAnalysis(aiAnalysis);
+      }
     } catch (error) {
       console.error('AI analysis failed:', error);
+      setAnalysis('Your goals show great ambition! Focus on breaking them down into smaller, actionable steps.');
     } finally {
       setIsAnalyzing(false);
     }
@@ -98,6 +102,18 @@ export const BucketListStep: React.FC<BucketListStepProps> = ({ data, onNext }) 
           <Plus className="h-6 w-6" />
           <span>Add another dream</span>
         </button>
+      )}
+
+      {analysis && (
+        <div className="bg-gradient-to-r from-[#2BD192]/10 to-[#05C2FF]/10 border border-[#2BD192]/30 rounded-xl p-6">
+          <div className="flex items-start space-x-3">
+            <Sparkles className="h-6 w-6 text-[#2BD192] mt-1" />
+            <div>
+              <h3 className="font-bold text-[#374151] mb-2">🤖 AI Analysis</h3>
+              <p className="text-[#374151] leading-relaxed">{analysis}</p>
+            </div>
+          </div>
+        </div>
       )}
 
       <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">

@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
 import { AppProvider, useApp } from '../context/AppContext';
 import { SplashLoader } from '../components/SplashLoader';
 import { Dashboard } from '../components/Dashboard';
@@ -8,24 +7,13 @@ import { CheckinsTab } from '../components/CheckinsTab';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Home, CheckSquare, Settings } from 'lucide-react';
 
-const AppRoutes: React.FC = () => {
+const HomeTabs: React.FC = () => {
   const { loading } = useApp();
 
   if (loading) {
     return <SplashLoader />;
   }
 
-  return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/home" replace />} />
-      <Route path="/splash" element={<SplashLoader />} />
-      <Route path="/home" element={<HomeTabs />} />
-      <Route path="/wizard" element={<div className="p-8 text-center">Wizard coming soon...</div>} />
-    </Routes>
-  );
-};
-
-const HomeTabs: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F4F6F8] via-white to-[#F4F6F8]">
       <Tabs defaultValue="dashboard" className="w-full">
@@ -68,7 +56,7 @@ const HomeTabs: React.FC = () => {
 const Index: React.FC = () => {
   return (
     <AppProvider>
-      <AppRoutes />
+      <HomeTabs />
     </AppProvider>
   );
 };

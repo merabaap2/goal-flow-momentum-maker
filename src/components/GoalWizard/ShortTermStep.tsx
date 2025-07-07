@@ -163,11 +163,14 @@ export const ShortTermStep: React.FC<ShortTermStepProps> = ({ data, onNext, onBa
   console.log('isValid:', isValid);
 
   const handleNext = () => {
+    // Show a confirmation dialog or just update data without navigation
     const cleanedGoals: { [key: string]: string[] } = {};
     Object.keys(shortTermGoals).forEach(mediumGoal => {
       cleanedGoals[mediumGoal] = shortTermGoals[mediumGoal].filter(goal => goal.trim().length > 0);
     });
-    onNext(cleanedGoals);
+    // Just update the data, don't navigate to next step
+    // onNext(cleanedGoals);
+    console.log('Short-term goals saved:', cleanedGoals);
   };
 
   return (

@@ -201,7 +201,7 @@ export const MediumTermStep: React.FC<MediumTermStepProps> = ({ data, onNext, on
                         onClick={() => applySuggestion(bucketItem, suggestion)}
                         className="text-left p-3 bg-white border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors duration-200 text-xs leading-relaxed"
                       >
-                        <div className="whitespace-pre-line">• {suggestion}</div>
+                        <div>• {suggestion}</div>
                       </button>
                     ))}
                   </div>

@@ -66,9 +66,9 @@ export const BucketListStep: React.FC<BucketListStepProps> = ({ data, onNext }) 
         {/* Big emoji and question */}
         <div className="text-center mb-6">
           <div className="text-6xl mb-4">🌟</div>
-          <h2 className="text-lg font-bold text-[#374151] mb-3">What are your biggest dreams?</h2>
+          <h2 className="text-lg font-bold text-[#374151] mb-3">What are your biggest bucket list items?</h2>
           <p className="text-sm text-gray-600 leading-relaxed px-2">
-            Think about your bucket list - the experiences, achievements, and aspirations that would make your life truly fulfilling. Don't hold back - dream big! ✨
+            Think about your bucket list - the experiences, achievements, and aspirations that would make your life truly fulfilling. Don't hold back - think big! ✨
           </p>
         </div>
 
@@ -77,7 +77,7 @@ export const BucketListStep: React.FC<BucketListStepProps> = ({ data, onNext }) 
           {bucketList.map((dream, index) => (
             <div key={index} className="relative group">
               <Textarea
-                placeholder={`💭 Dream ${index + 1}: What would make your life amazing?`}
+                placeholder={`💭 Bucket List Item ${index + 1}: What would make your life amazing?`}
                 value={dream}
                 onChange={(e) => updateGoal(index, e.target.value)}
                 className={cn(
@@ -104,7 +104,7 @@ export const BucketListStep: React.FC<BucketListStepProps> = ({ data, onNext }) 
             className="w-full p-4 border-2 border-dashed border-[#2BD192] rounded-xl text-[#2BD192] hover:bg-green-50 transition-all duration-200 flex items-center justify-center space-x-2 text-sm"
           >
             <Plus className="h-4 w-4" />
-            <span>Add another dream</span>
+            <span>Add another bucket list item</span>
           </button>
         )}
 

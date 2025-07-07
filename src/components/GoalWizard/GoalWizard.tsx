@@ -161,7 +161,7 @@ export const GoalWizard: React.FC = () => {
   };
 
   const stepTitles = [
-    "📝 Share Your Dreams",
+    "📝 Share Your Bucket List",
     "⏰ Set Your Timeline", 
     "🎯 Medium-Term Goals",
     "📋 Short-Term Actions",
@@ -171,8 +171,8 @@ export const GoalWizard: React.FC = () => {
 
   const stepDescriptions = [
     "Let's start with your biggest aspirations and bucket list dreams",
-    "How long do you want to take to achieve these dreams?",
-    "What medium-term goals will help you reach your dreams?",
+    "How long do you want to take to achieve these bucket list items?",
+    "What medium-term goals will help you reach your bucket list?",
     "What short-term actions will move you forward?",
     "What daily habits will keep you on track?",
     "Review and finalize your personalized goal roadmap"

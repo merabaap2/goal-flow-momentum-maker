@@ -2,7 +2,7 @@ const GEMINI_API_KEY = 'AIzaSyALIwTDBeZvgmQCAtiu9BxXvpWtH2e4oHA';
 
 export const generateGeminiSuggestions = async (prompt: string, context?: string): Promise<string[]> => {
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ export const generateGeminiSuggestions = async (prompt: string, context?: string
 
 export const analyzeGoalsWithGemini = async (goals: string[], timeline: number): Promise<string> => {
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -151,15 +151,9 @@ export const ShortTermStep: React.FC<ShortTermStepProps> = ({ data, onNext, onBa
     }
   };
 
-  const isValid = Object.values(goalsByBucket).flat().every(mediumGoal => {
-    const goals = shortTermGoals[mediumGoal] || [];
-    console.log('Checking medium goal:', mediumGoal, 'goals:', goals);
-    const hasValidGoal = goals.some(g => g.trim().length > 0);
-    console.log('Has valid goal:', hasValidGoal);
-    return hasValidGoal;
-  });
-  
-  console.log('Overall isValid:', isValid, 'shortTermGoals:', shortTermGoals);
+  const isValid = Object.keys(shortTermGoals).length > 0 && Object.values(shortTermGoals).some(goals => 
+    goals.some(goal => goal.trim().length > 0)
+  );
 
   const handleNext = () => {
     const cleanedGoals: { [key: string]: string[] } = {};

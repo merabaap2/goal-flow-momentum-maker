@@ -13,11 +13,11 @@ export const generateGeminiSuggestions = async (prompt: string, context?: string
         messages: [
           {
             role: 'system',
-            content: 'You are a goal coach. You MUST provide exactly 3 separate actionable suggestions. Each suggestion MUST be exactly 3 lines. Line 1: main action (10-12 words). Line 2: implementation detail (10-12 words). Line 3: expected benefit (10-12 words). Always return exactly 3 suggestions in JSON array format.'
+            content: 'You are a goal coach. You MUST provide exactly 3 separate actionable suggestions. Each suggestion MUST be exactly 2 lines. Line 1: main action (12-15 words). Line 2: implementation detail or benefit (12-15 words). Always return exactly 3 suggestions in JSON array format.'
           },
           {
             role: 'user',
-            content: `Goal: "${context?.replace('User\'s dream: ', '') || prompt}"\n\nProvide exactly 3 different actionable suggestions. Each suggestion must have exactly 3 lines:\n\nLine 1: Main action (10-12 words)\nLine 2: Implementation detail (10-12 words) \nLine 3: Expected benefit (10-12 words)\n\nIMPORTANT: Return exactly 3 suggestions in this format: ["Action 1\\nImplementation 1\\nBenefit 1", "Action 2\\nImplementation 2\\nBenefit 2", "Action 3\\nImplementation 3\\nBenefit 3"]`
+            content: `Goal: "${context?.replace('User\'s dream: ', '') || prompt}"\n\nProvide exactly 3 different actionable suggestions. Each suggestion must have exactly 2 lines:\n\nLine 1: Main action (12-15 words)\nLine 2: Implementation detail or benefit (12-15 words)\n\nIMPORTANT: Return exactly 3 suggestions in this format: ["Action 1\\nImplementation 1", "Action 2\\nImplementation 2", "Action 3\\nImplementation 3"]`
           }
         ],
         temperature: 0.8,
@@ -51,11 +51,11 @@ export const generateGeminiSuggestions = async (prompt: string, context?: string
         .map(line => line.replace(/^[\d\-\*\.\s]+/, '').trim())
         .filter(line => line.length > 10);
       
-      // Group lines into sets of 3 for suggestions
+      // Group lines into sets of 2 for suggestions
       const suggestions = [];
-      for (let i = 0; i < Math.min(9, lines.length); i += 3) {
-        if (i + 2 < lines.length) {
-          suggestions.push(`${lines[i]}\n${lines[i+1]}\n${lines[i+2]}`);
+      for (let i = 0; i < Math.min(6, lines.length); i += 2) {
+        if (i + 1 < lines.length) {
+          suggestions.push(`${lines[i]}\n${lines[i+1]}`);
         }
       }
       return suggestions.slice(0, 3);

@@ -326,13 +326,15 @@ export const BucketListStep: React.FC<BucketListStepProps> = ({ data, onNext }) 
   );
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="flex-1 space-y-4 overflow-y-auto">
-        {conversationState === 'intro' && renderIntroState()}
-        {conversationState === 'asking' && renderAskingState()}
-        {conversationState === 'asking-more' && renderAskingMoreState()}
-        {conversationState === 'review' && renderReviewState()}
-        {conversationState === 'analyzing' && renderAnalyzingState()}
+    <div className="h-full flex flex-col overflow-hidden">
+      <div className="flex-1 overflow-y-auto px-1">
+        <div className="space-y-4 pb-4">
+          {conversationState === 'intro' && renderIntroState()}
+          {conversationState === 'asking' && renderAskingState()}
+          {conversationState === 'asking-more' && renderAskingMoreState()}
+          {conversationState === 'review' && renderReviewState()}
+          {conversationState === 'analyzing' && renderAnalyzingState()}
+        </div>
       </div>
     </div>
   );

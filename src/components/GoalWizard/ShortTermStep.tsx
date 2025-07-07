@@ -220,7 +220,7 @@ export const ShortTermStep: React.FC<ShortTermStepProps> = ({ data, onNext, onBa
                             onClick={() => applySuggestion(mediumGoal, suggestion)}
                             className="text-left p-3 bg-white border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors duration-200 text-xs leading-relaxed"
                           >
-                            <div className="line-clamp-2">• {suggestion}</div>
+                            <div>• {suggestion}</div>
                           </button>
                         ))}
                       </div>

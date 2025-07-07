@@ -34,10 +34,16 @@ export const SplashLoader: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F4F6F8] via-white to-[#F4F6F8] flex items-center justify-center">
-      <LoaderPulse 
-        message="Syncing your goals..."
-        progress={progress}
-      />
+      <div className="text-center">
+        <div className="w-24 h-24 bg-gradient-to-r from-[#2BD192] to-[#05C2FF] rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-xl">
+          <span className="text-white font-bold text-3xl">R</span>
+        </div>
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-[#2BD192] to-[#05C2FF] bg-clip-text text-transparent mb-4">RDM</h1>
+        <LoaderPulse 
+          message="Syncing your goals..."
+          progress={progress}
+        />
+      </div>
     </div>
   );
 };

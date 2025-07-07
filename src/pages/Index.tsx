@@ -61,8 +61,8 @@ const HomeTabs: React.FC = () => {
                 <span className="text-white font-bold text-lg">D</span>
               </div>
               <div>
-                <h1 className="text-xl font-bold text-[#374151]">DreamMap</h1>
-                <p className="text-xs text-gray-500 capitalize">{currentTab.replace('-', ' ')}</p>
+              <h1 className="text-xl font-bold text-[#374151]">RDM</h1>
+              <p className="text-xs text-gray-500 capitalize">{currentTab.replace('-', ' ')}</p>
               </div>
             </div>
             

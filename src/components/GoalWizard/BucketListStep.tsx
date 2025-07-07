@@ -109,25 +109,27 @@ export const BucketListStep: React.FC<BucketListStepProps> = ({ data, onNext }) 
   };
 
   const renderIntroState = () => (
-    <div className="text-center space-y-6 animate-fade-in">
-      <div className="text-6xl mb-4">🌟</div>
-      <div>
-        <h2 className="text-xl font-bold text-[#374151] mb-3">Let's Dream Big Together!</h2>
-        <p className="text-sm text-gray-600 leading-relaxed px-2 mb-4">
-          {currentQuote}
-        </p>
-        <p className="text-xs text-gray-500">
-          I'm here to help you create an amazing bucket list that will inspire your journey ahead.
-        </p>
-      </div>
-      
-      <div className="mt-8">
-        <AppButton
-          onClick={() => setConversationState('asking')}
-          className="w-full h-12 text-base font-semibold"
-        >
-          Let's Start! 🚀
-        </AppButton>
+    <div className="h-full flex items-center justify-center">
+      <div className="text-center space-y-6 animate-fade-in max-w-sm mx-auto">
+        <div className="text-6xl mb-4">🌟</div>
+        <div>
+          <h2 className="text-xl font-bold text-[#374151] mb-3">Let's Dream Big Together!</h2>
+          <p className="text-sm text-gray-600 leading-relaxed px-2 mb-4">
+            {currentQuote}
+          </p>
+          <p className="text-xs text-gray-500">
+            I'm here to help you create an amazing bucket list that will inspire your journey ahead.
+          </p>
+        </div>
+        
+        <div className="mt-8">
+          <AppButton
+            onClick={() => setConversationState('asking')}
+            className="w-full h-12 text-base font-semibold"
+          >
+            Let's Start! 🚀
+          </AppButton>
+        </div>
       </div>
     </div>
   );

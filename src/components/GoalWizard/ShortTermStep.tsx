@@ -176,22 +176,13 @@ export const ShortTermStep: React.FC<ShortTermStepProps> = ({ data, onNext, onBa
       <div className="space-y-6">
         {Object.values(goalsByBucket).flat().map((mediumGoal, goalIndex) => (
           <div key={goalIndex} className="bg-white border border-gray-200 rounded-lg p-4 space-y-4">
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <div className="text-yellow-500 text-lg mt-0.5">🎯</div>
               <div className="flex-1">
-                <p className="text-gray-700 text-sm leading-relaxed">
-                  🎯 {mediumGoal}
+                <p className="text-gray-700 text-sm leading-relaxed line-clamp-3">
+                  {mediumGoal}
                 </p>
               </div>
-              <AppButton
-                variant="outline"
-                size="sm"
-                onClick={() => generateSuggestions(mediumGoal)}
-                disabled={isGeneratingSuggestions}
-                className="px-3 py-1 h-8 text-xs border-[#2BD192] text-[#2BD192] hover:bg-green-50"
-              >
-                <Lightbulb className="h-3 w-3 mr-1" />
-                Get Ideas
-              </AppButton>
             </div>
 
             {suggestions[mediumGoal] && suggestions[mediumGoal].length > 0 && (
@@ -207,7 +198,7 @@ export const ShortTermStep: React.FC<ShortTermStepProps> = ({ data, onNext, onBa
                       onClick={() => applySuggestion(mediumGoal, suggestion)}
                       className="text-left p-3 bg-white border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors duration-200 text-xs leading-relaxed"
                     >
-                      <div>• {suggestion}</div>
+                      <div className="line-clamp-2">• {suggestion}</div>
                     </button>
                   ))}
                 </div>

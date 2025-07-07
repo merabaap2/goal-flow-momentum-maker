@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { AppProvider, useApp } from '../context/AppContext';
 import { SplashLoader } from '../components/SplashLoader';
 import { Dashboard } from '../components/Dashboard';
@@ -68,9 +68,7 @@ const HomeTabs: React.FC = () => {
 const Index: React.FC = () => {
   return (
     <AppProvider>
-      <Router>
-        <AppRoutes />
-      </Router>
+      <AppRoutes />
     </AppProvider>
   );
 };

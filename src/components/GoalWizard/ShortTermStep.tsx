@@ -151,8 +151,8 @@ export const ShortTermStep: React.FC<ShortTermStepProps> = ({ data, onNext, onBa
     }
   };
 
-  const isValid = Object.values(goalsByBucket).flat().every(goal => {
-    const goals = shortTermGoals[goal] || [];
+  const isValid = Object.values(goalsByBucket).flat().every(mediumGoal => {
+    const goals = shortTermGoals[mediumGoal] || [];
     return goals.some(g => g.trim().length > 0);
   });
 

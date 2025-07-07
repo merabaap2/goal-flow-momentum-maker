@@ -19,6 +19,7 @@ export const ShortTermStep: React.FC<ShortTermStepProps> = ({ data, onNext, onBa
   );
   const [suggestions, setSuggestions] = useState<{ [key: string]: string[] }>({});
   const [isGeneratingSuggestions, setIsGeneratingSuggestions] = useState(false);
+  const [expandedItems, setExpandedItems] = useState<{ [key: string]: boolean }>({});
 
   // Group medium-term goals by bucket list items
   const goalsByBucket: { [bucketItem: string]: string[] } = {};
@@ -176,11 +177,32 @@ export const ShortTermStep: React.FC<ShortTermStepProps> = ({ data, onNext, onBa
         {Object.values(goalsByBucket).flat().map((mediumGoal, goalIndex) => (
           <Card key={goalIndex} className="border-2 border-gray-200">
             <CardHeader className="pb-3">
-              <div className="flex items-center justify-between gap-2">
+              <div className="flex items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">
-                  <CardTitle className="text-base text-[#374151] mb-1 truncate pr-2">
+                  <CardTitle 
+                    className={cn(
+                      "text-base text-[#374151] mb-1 cursor-pointer hover:text-[#2BD192] transition-colors pr-2",
+                      !expandedItems[mediumGoal] && 'line-clamp-1'
+                    )}
+                    onClick={() => {
+                      setExpandedItems(prev => ({
+                        ...prev,
+                        [mediumGoal]: !prev[mediumGoal]
+                      }));
+                    }}
+                    title="Click to expand/collapse"
+                  >
                     🎯 {mediumGoal}
                   </CardTitle>
+                  <button
+                    onClick={() => setExpandedItems(prev => ({
+                      ...prev,
+                      [mediumGoal]: !prev[mediumGoal]
+                    }))}
+                    className="text-xs text-gray-500 hover:text-[#2BD192] transition-colors"
+                  >
+                    {expandedItems[mediumGoal] ? "Show less" : "Show more..."}
+                  </button>
                 </div>
                 <div className="flex-shrink-0">
                   <AppButton

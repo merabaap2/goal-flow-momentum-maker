@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import { SplashLoader } from "./components/SplashLoader";
+import { GoalWizard } from "./components/GoalWizard/GoalWizard";
 
 const queryClient = new QueryClient();
 
@@ -19,7 +20,7 @@ const App = () => (
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="/splash" element={<SplashLoader />} />
           <Route path="/home" element={<Index />} />
-          <Route path="/wizard" element={<div className="p-8 text-center">Wizard coming soon...</div>} />
+          <Route path="/wizard" element={<GoalWizard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

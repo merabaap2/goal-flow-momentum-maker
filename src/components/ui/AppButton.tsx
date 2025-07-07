@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 
 interface AppButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'ghost' | 'danger';
+  variant?: 'primary' | 'ghost' | 'danger' | 'outline';
   size?: 'sm' | 'md' | 'lg';
   loading?: boolean;
   children: React.ReactNode;
@@ -23,7 +23,8 @@ export const AppButton: React.FC<AppButtonProps> = ({
   const variants = {
     primary: 'bg-gradient-to-r from-[#2BD192] to-[#05C2FF] hover:from-[#25B885] hover:to-[#0494CC] text-white shadow-lg',
     ghost: 'bg-transparent border-2 border-[#374151] text-[#374151] hover:bg-[#374151] hover:text-white',
-    danger: 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg'
+    danger: 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg',
+    outline: 'bg-white border-2 border-[#2BD192] text-[#2BD192] hover:bg-[#2BD192] hover:text-white'
   };
 
   const sizes = {

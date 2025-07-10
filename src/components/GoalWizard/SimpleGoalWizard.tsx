@@ -151,7 +151,7 @@ export const SimpleGoalWizard: React.FC = () => {
   };
 
   const stepTitles = [
-    "🌟 Your Dream",
+    "🌟 Your Bucket List",
     "🎯 Medium-Term Goals", 
     "📋 Short-Term Actions",
     "🔄 Daily Habits",

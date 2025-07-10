@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import { SplashLoader } from "./components/SplashLoader";
 import { GoalWizard } from "./components/GoalWizard/GoalWizard";
+import { SimpleGoalWizard } from "./components/GoalWizard/SimpleGoalWizard";
 import { AuthPage } from "./pages/AuthPage";
 import { AppProvider } from "./context/AppContext";
 
@@ -25,6 +26,7 @@ const App = () => (
             <Route path="/splash" element={<SplashLoader />} />
             <Route path="/home" element={<Index />} />
             <Route path="/wizard" element={<GoalWizard />} />
+            <Route path="/simple-wizard" element={<SimpleGoalWizard />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

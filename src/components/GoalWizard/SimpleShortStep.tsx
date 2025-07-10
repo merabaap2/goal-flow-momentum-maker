@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { AppButton } from '../ui/AppButton';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, Trash2, ArrowRight, CheckSquare } from 'lucide-react';
+import { Plus, Trash2, ArrowRight, CheckSquare, Lightbulb } from 'lucide-react';
+import { generateGeminiSuggestions } from '../../lib/gemini';
 
 interface SimpleShortStepProps {
   bucketItem: string;
@@ -17,6 +18,8 @@ export const SimpleShortStep: React.FC<SimpleShortStepProps> = ({
   onBack 
 }) => {
   const [shortGoals, setShortGoals] = useState<string[]>(['']);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const addGoal = () => {
     if (shortGoals.length < 5) {
@@ -38,6 +41,34 @@ export const SimpleShortStep: React.FC<SimpleShortStepProps> = ({
 
   const validGoals = shortGoals.filter(goal => goal.trim().length > 0);
   const canProceed = validGoals.length >= 1;
+
+  const generateSuggestions = async () => {
+    setIsGenerating(true);
+    try {
+      const prompt = `For the bucket list dream: "${bucketItem}", what are 3 short-term actions (next few weeks) that someone can take? Focus on specific, actionable steps.`;
+      const aiSuggestions = await generateGeminiSuggestions(prompt, `User's dream: ${bucketItem}`);
+      setSuggestions(aiSuggestions);
+    } catch (error) {
+      console.error('Failed to generate suggestions:', error);
+      setSuggestions([
+        'Research and gather information about your dream',
+        'Create a detailed plan with specific deadlines',
+        'Take the first concrete step toward your goal'
+      ]);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const applySuggestion = (suggestion: string) => {
+    const emptyIndex = shortGoals.findIndex(goal => goal.trim() === '');
+    if (emptyIndex !== -1) {
+      updateGoal(emptyIndex, suggestion);
+    } else if (shortGoals.length < 5) {
+      setShortGoals([...shortGoals, suggestion]);
+    }
+    setSuggestions([]);
+  };
 
   const handleNext = () => {
     if (canProceed) {
@@ -82,13 +113,44 @@ export const SimpleShortStep: React.FC<SimpleShortStepProps> = ({
       </div>
 
       {shortGoals.length < 5 && (
-        <button
-          onClick={addGoal}
-          className="w-full p-4 border-2 border-dashed border-[#2BD192] rounded-xl text-[#2BD192] hover:bg-green-50 transition-all duration-200 flex items-center justify-center space-x-2"
-        >
-          <Plus className="h-5 w-5" />
-          <span>Add another action</span>
-        </button>
+        <div className="space-y-3">
+          <button
+            onClick={addGoal}
+            className="w-full p-4 border-2 border-dashed border-[#2BD192] rounded-xl text-[#2BD192] hover:bg-green-50 transition-all duration-200 flex items-center justify-center space-x-2"
+          >
+            <Plus className="h-5 w-5" />
+            <span>Add another action</span>
+          </button>
+          
+          <button
+            onClick={generateSuggestions}
+            disabled={isGenerating}
+            className="w-full p-4 border-2 border-dashed border-yellow-400 rounded-xl text-yellow-600 hover:bg-yellow-50 transition-all duration-200 flex items-center justify-center space-x-2"
+          >
+            <Lightbulb className="h-5 w-5" />
+            <span>{isGenerating ? 'Getting Ideas...' : 'Get Ideas'}</span>
+          </button>
+        </div>
+      )}
+
+      {suggestions.length > 0 && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+          <h3 className="font-bold text-yellow-800 text-sm mb-3 flex items-center">
+            <Lightbulb className="mr-2 h-4 w-4" />
+            AI Suggestions for "{bucketItem}":
+          </h3>
+          <div className="space-y-2">
+            {suggestions.map((suggestion, index) => (
+              <button
+                key={index}
+                onClick={() => applySuggestion(suggestion)}
+                className="w-full text-left p-3 bg-white rounded-lg hover:bg-yellow-100 transition-colors border border-yellow-200"
+              >
+                <span className="text-sm text-gray-700">• {suggestion}</span>
+              </button>
+            ))}
+          </div>
+        </div>
       )}
 
       <div className="flex justify-between pt-4">

@@ -6,12 +6,14 @@ import { generateGeminiSuggestions } from '../../lib/gemini';
 
 interface SimpleDailyStepProps {
   bucketItem: string;
+  timeline: number;
   onNext: (dailyHabits: string[]) => void;
   onBack: () => void;
 }
 
 export const SimpleDailyStep: React.FC<SimpleDailyStepProps> = ({ 
   bucketItem, 
+  timeline,
   onNext, 
   onBack 
 }) => {
@@ -43,8 +45,8 @@ export const SimpleDailyStep: React.FC<SimpleDailyStepProps> = ({
   const generateSuggestions = async () => {
     setIsGenerating(true);
     try {
-      const prompt = `For the bucket list dream: "${bucketItem}", what are 3 small daily habits (5-30 minutes each) that will help achieve this? Focus on micro-habits that build momentum.`;
-      const aiSuggestions = await generateGeminiSuggestions(prompt, `User's dream: ${bucketItem}`);
+      const prompt = `For the bucket list dream: "${bucketItem}" with a ${timeline}-year timeline, what are 3 small daily habits (5-30 minutes each) that will consistently build towards this goal? Focus on micro-habits that compound over ${timeline} years.`;
+      const aiSuggestions = await generateGeminiSuggestions(prompt, `User's dream: ${bucketItem}, Timeline: ${timeline} years`);
       setSuggestions(aiSuggestions);
     } catch (error) {
       console.error('Failed to generate suggestions:', error);
@@ -85,7 +87,7 @@ export const SimpleDailyStep: React.FC<SimpleDailyStepProps> = ({
           </p>
         </div>
         <p className="text-gray-600 px-4">
-          What daily habits will keep you on track towards achieving your dream? Small consistent actions create big results.
+          What daily habits will keep you on track towards achieving your dream over {timeline} years? Small consistent actions create big results.
         </p>
       </div>
 

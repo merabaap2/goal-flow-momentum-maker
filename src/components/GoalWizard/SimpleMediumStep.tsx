@@ -5,11 +5,13 @@ import { Plus, Trash2, ArrowRight, Target, Lightbulb } from 'lucide-react';
 import { generateGeminiSuggestions } from '../../lib/gemini';
 interface SimpleMediumStepProps {
   bucketItem: string;
+  timeline: number;
   onNext: (mediumGoals: string[]) => void;
   onBack: () => void;
 }
 export const SimpleMediumStep: React.FC<SimpleMediumStepProps> = ({
   bucketItem,
+  timeline,
   onNext,
   onBack
 }) => {
@@ -36,8 +38,8 @@ export const SimpleMediumStep: React.FC<SimpleMediumStepProps> = ({
   const generateSuggestions = async () => {
     setIsGenerating(true);
     try {
-      const prompt = `For the bucket list dream: "${bucketItem}", what are 3 medium-term goals (3-12 months) that will help achieve this? Focus on specific, actionable goals.`;
-      const aiSuggestions = await generateGeminiSuggestions(prompt, `User's dream: ${bucketItem}`);
+      const prompt = `For the bucket list dream: "${bucketItem}" with a ${timeline}-year timeline, what are 3 medium-term goals (6 months to 2 years) that will help achieve this dream? Consider the timeline and focus on specific, actionable milestones that build toward the final goal.`;
+      const aiSuggestions = await generateGeminiSuggestions(prompt, `User's dream: ${bucketItem}, Timeline: ${timeline} years`);
       setSuggestions(aiSuggestions);
     } catch (error) {
       console.error('Failed to generate suggestions:', error);
@@ -70,7 +72,7 @@ export const SimpleMediumStep: React.FC<SimpleMediumStepProps> = ({
           </p>
         </div>
         <p className="text-gray-600 px-4">
-          What medium-term goals will help you achieve this dream? Think of milestones that could take 3-12 months.
+          What medium-term goals will help you achieve this dream over {timeline} years? Think of milestones that could take 6 months to 2 years.
         </p>
       </div>
 

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
 import { WizardLayout } from './WizardLayout';
 import { SimpleBucketStep } from './SimpleBucketStep';
+import { TimelineStep } from './TimelineStep';
 import { SimpleMediumStep } from './SimpleMediumStep';
 import { SimpleShortStep } from './SimpleShortStep';
 import { SimpleDailyStep } from './SimpleDailyStep';
@@ -11,6 +12,7 @@ import { Dream, Enabler, ShortGoal, DailyHabit } from '../../types';
 
 interface SimpleWizardData {
   bucketItem: string;
+  timeline: number;
   mediumGoals: string[];
   shortGoals: string[];
   dailyHabits: string[];
@@ -20,6 +22,7 @@ export const SimpleGoalWizard: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [wizardData, setWizardData] = useState<SimpleWizardData>({
     bucketItem: '',
+    timeline: 10,
     mediumGoals: [],
     shortGoals: [],
     dailyHabits: [],
@@ -27,7 +30,7 @@ export const SimpleGoalWizard: React.FC = () => {
   
   const { addDream, setIsFirstLaunch } = useApp();
   const navigate = useNavigate();
-  const totalSteps = 5;
+  const totalSteps = 6;
 
   const nextStep = () => {
     if (currentStep < totalSteps) {
@@ -90,13 +93,19 @@ export const SimpleGoalWizard: React.FC = () => {
               nextStep();
             }}
           />
-        );
+         );
       case 2:
         return (
-          <SimpleMediumStep
-            bucketItem={wizardData.bucketItem}
-            onNext={(mediumGoals) => {
-              setWizardData(prev => ({ ...prev, mediumGoals }));
+          <TimelineStep
+            data={{ 
+              bucketList: [wizardData.bucketItem], 
+              timeline: wizardData.timeline,
+              mediumTermGoals: {},
+              shortTermGoals: {},
+              dailyHabits: {}
+            }}
+            onNext={(timeline) => {
+              setWizardData(prev => ({ ...prev, timeline }));
               nextStep();
             }}
             onBack={prevStep}
@@ -104,11 +113,11 @@ export const SimpleGoalWizard: React.FC = () => {
         );
       case 3:
         return (
-          <SimpleShortStep
+          <SimpleMediumStep
             bucketItem={wizardData.bucketItem}
-            mediumGoals={wizardData.mediumGoals}
-            onNext={(shortGoals) => {
-              setWizardData(prev => ({ ...prev, shortGoals }));
+            timeline={wizardData.timeline}
+            onNext={(mediumGoals) => {
+              setWizardData(prev => ({ ...prev, mediumGoals }));
               nextStep();
             }}
             onBack={prevStep}
@@ -116,8 +125,22 @@ export const SimpleGoalWizard: React.FC = () => {
         );
       case 4:
         return (
+          <SimpleShortStep
+            bucketItem={wizardData.bucketItem}
+            timeline={wizardData.timeline}
+            mediumGoals={wizardData.mediumGoals}
+            onNext={(shortGoals) => {
+              setWizardData(prev => ({ ...prev, shortGoals }));
+              nextStep();
+            }}
+            onBack={prevStep}
+          />
+         );
+      case 5:
+        return (
           <SimpleDailyStep
             bucketItem={wizardData.bucketItem}
+            timeline={wizardData.timeline}
             onNext={(dailyHabits) => {
               setWizardData(prev => ({ ...prev, dailyHabits }));
               nextStep();
@@ -125,12 +148,12 @@ export const SimpleGoalWizard: React.FC = () => {
             onBack={prevStep}
           />
         );
-      case 5:
+      case 6:
         return (
           <CompletionStep
             data={{
               bucketList: [wizardData.bucketItem],
-              timeline: 10,
+              timeline: wizardData.timeline,
               mediumTermGoals: { [wizardData.bucketItem]: wizardData.mediumGoals },
               shortTermGoals: wizardData.mediumGoals.reduce((acc, goal) => {
                 acc[goal] = wizardData.shortGoals;
@@ -152,6 +175,7 @@ export const SimpleGoalWizard: React.FC = () => {
 
   const stepTitles = [
     "🌟 Your Bucket List",
+    "⏰ Set Your Timeline",
     "🎯 Medium-Term Goals", 
     "📋 Short-Term Actions",
     "🔄 Daily Habits",
@@ -160,6 +184,7 @@ export const SimpleGoalWizard: React.FC = () => {
 
   const stepDescriptions = [
     "Let's start with one dream from your bucket list",
+    "How many years will you need to achieve this dream?",
     "What goals will help you achieve this dream?",
     "What actions can you take in the coming weeks?",
     "What daily habits will keep you on track?",

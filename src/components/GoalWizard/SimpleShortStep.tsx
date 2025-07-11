@@ -6,6 +6,7 @@ import { generateGeminiSuggestions } from '../../lib/gemini';
 
 interface SimpleShortStepProps {
   bucketItem: string;
+  timeline: number;
   mediumGoals: string[];
   onNext: (shortGoals: string[]) => void;
   onBack: () => void;
@@ -13,6 +14,7 @@ interface SimpleShortStepProps {
 
 export const SimpleShortStep: React.FC<SimpleShortStepProps> = ({ 
   bucketItem, 
+  timeline,
   mediumGoals, 
   onNext, 
   onBack 
@@ -45,8 +47,9 @@ export const SimpleShortStep: React.FC<SimpleShortStepProps> = ({
   const generateSuggestions = async () => {
     setIsGenerating(true);
     try {
-      const prompt = `For the bucket list dream: "${bucketItem}", what are 3 short-term actions (next few weeks) that someone can take? Focus on specific, actionable steps.`;
-      const aiSuggestions = await generateGeminiSuggestions(prompt, `User's dream: ${bucketItem}`);
+      const mediumGoalContext = mediumGoals.length > 0 ? ` considering these medium-term goals: ${mediumGoals.join(', ')}` : '';
+      const prompt = `For the bucket list dream: "${bucketItem}" with a ${timeline}-year timeline${mediumGoalContext}, what are 3 short-term actions (next 1-3 months) that someone can take to make immediate progress? Focus on specific, actionable steps that align with the overall ${timeline}-year plan.`;
+      const aiSuggestions = await generateGeminiSuggestions(prompt, `User's dream: ${bucketItem}, Timeline: ${timeline} years, Medium goals: ${mediumGoals.join(', ')}`);
       setSuggestions(aiSuggestions);
     } catch (error) {
       console.error('Failed to generate suggestions:', error);
@@ -87,7 +90,7 @@ export const SimpleShortStep: React.FC<SimpleShortStepProps> = ({
           </p>
         </div>
         <p className="text-gray-600 px-4">
-          What short-term actions can you take in the next few weeks to move towards your goals?
+          What short-term actions can you take in the next 1-3 months to move towards your goals within your {timeline}-year timeline?
         </p>
       </div>
 

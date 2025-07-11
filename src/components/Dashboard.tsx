@@ -1,14 +1,14 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { ProgressRing } from './ui/ProgressRing';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { CheckCircle2, Clock, Target, Calendar } from 'lucide-react';
+import { Target, CheckCircle2, XCircle, Gift, Send, Frown } from 'lucide-react';
 export const Dashboard: React.FC = () => {
-  const {
-    store
-  } = useApp();
+  const { store } = useApp();
+  const navigate = useNavigate();
 
   // Calculate progress for each dream
   const getDreamProgress = (dream: any) => {
@@ -28,21 +28,34 @@ export const Dashboard: React.FC = () => {
     };
   };
 
-  // Get overall statistics
-  const getOverallStats = () => {
-    const totalDreams = store.dreams.length;
-    const totalEnablers = store.dreams.reduce((acc, dream) => acc + dream.enablers.length, 0);
-    const totalShortGoals = store.dreams.reduce((acc, dream) => acc + dream.enablers.reduce((enablerAcc: number, enabler: any) => enablerAcc + enabler.shortGoals.length, 0), 0);
-    const completedShortGoals = store.dreams.reduce((acc, dream) => acc + dream.enablers.reduce((enablerAcc: number, enabler: any) => enablerAcc + enabler.shortGoals.filter((goal: any) => goal.done).length, 0), 0);
+  // Get new dashboard statistics
+  const getNewDashboardStats = () => {
+    const totalGoals = store.dreams.length; // Total bucket list items/goals
+    
+    // Calculate successful goals based on completed enablers/medium goals
+    const successfulGoals = store.dreams.filter(dream => {
+      const totalShortGoals = dream.enablers.reduce((acc, enabler) => acc + enabler.shortGoals.length, 0);
+      const completedShortGoals = dream.enablers.reduce((acc, enabler) => acc + enabler.shortGoals.filter(goal => goal.done).length, 0);
+      // Consider a dream successful if more than 80% of its short goals are completed
+      return totalShortGoals > 0 && (completedShortGoals / totalShortGoals) >= 0.8;
+    }).length;
+    
+    const failedGoals = 0; // For now, we'll consider this as goals that are overdue or marked as failed
+    const rdmRewardsEarned = 0; // Placeholder - this would come from your RDM system
+    const rdmRewardsGiven = 0; // Placeholder - this would come from your RDM system
+    const rdmRemorseBucket = 0; // Placeholder - this would come from your RDM system
+    
     return {
-      totalDreams,
-      totalEnablers,
-      totalShortGoals,
-      completedShortGoals
+      totalGoals,
+      successfulGoals,
+      failedGoals,
+      rdmRewardsEarned,
+      rdmRewardsGiven,
+      rdmRemorseBucket
     };
   };
   const todayHabits = getTodayHabitsProgress();
-  const stats = getOverallStats();
+  const newStats = getNewDashboardStats();
   if (store.dreams.length === 0) {
     return <div className="p-4 space-y-6">
         <div className="text-center space-y-2">
@@ -64,37 +77,71 @@ export const Dashboard: React.FC = () => {
         <p className="text-gray-600">Track your journey towards your dreams</p>
       </div>
 
-      {/* Overall Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="text-center border-2 border-[#2BD192] bg-green-50">
+      {/* New Dashboard Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <Card 
+          className="text-center border-2 border-primary bg-primary/5 cursor-pointer hover:bg-primary/10 transition-colors"
+          onClick={() => navigate('/goals-overview')}
+        >
           <CardContent className="p-4">
-            <div className="text-2xl mb-2">🌟</div>
-            <div className="text-2xl font-bold text-[#374151]">{stats.totalDreams}</div>
-            <div className="text-sm text-gray-600">Dreams</div>
+            <Target className="h-8 w-8 mx-auto mb-2 text-primary" />
+            <div className="text-2xl font-bold text-foreground">{newStats.totalGoals}</div>
+            <div className="text-sm text-muted-foreground">No. of Goals</div>
           </CardContent>
         </Card>
         
-        <Card className="text-center border-2 border-blue-400 bg-blue-50">
+        <Card 
+          className="text-center border-2 border-green-500 bg-green-50 cursor-pointer hover:bg-green-100 transition-colors"
+          onClick={() => navigate('/goals-success')}
+        >
           <CardContent className="p-4">
-            <div className="text-2xl mb-2">🎯</div>
-            <div className="text-2xl font-bold text-[#374151]">{stats.totalEnablers}</div>
-            <div className="text-sm text-gray-600">Medium Goals</div>
+            <CheckCircle2 className="h-8 w-8 mx-auto mb-2 text-green-600" />
+            <div className="text-2xl font-bold text-foreground">{newStats.successfulGoals}</div>
+            <div className="text-sm text-muted-foreground">No. of Goals Success</div>
           </CardContent>
         </Card>
         
-        <Card className="text-center border-2 border-purple-400 bg-purple-50">
+        <Card 
+          className="text-center border-2 border-red-500 bg-red-50 cursor-pointer hover:bg-red-100 transition-colors"
+          onClick={() => navigate('/goals-failed')}
+        >
           <CardContent className="p-4">
-            <div className="text-2xl mb-2">✅</div>
-            <div className="text-2xl font-bold text-[#374151]">{stats.completedShortGoals}/{stats.totalShortGoals}</div>
-            <div className="text-sm text-gray-600">Tasks Done</div>
+            <XCircle className="h-8 w-8 mx-auto mb-2 text-red-600" />
+            <div className="text-2xl font-bold text-foreground">{newStats.failedGoals}</div>
+            <div className="text-sm text-muted-foreground">No. of Goals Failed</div>
           </CardContent>
         </Card>
         
-        <Card className="text-center border-2 border-orange-400 bg-orange-50">
+        <Card 
+          className="text-center border-2 border-amber-500 bg-amber-50 cursor-pointer hover:bg-amber-100 transition-colors"
+          onClick={() => navigate('/rdm-rewards-earned')}
+        >
           <CardContent className="p-4">
-            <div className="text-2xl mb-2">🔄</div>
-            <div className="text-2xl font-bold text-[#374151]">{todayHabits.completed}/{todayHabits.total}</div>
-            <div className="text-sm text-gray-600">Today's Habits</div>
+            <Gift className="h-8 w-8 mx-auto mb-2 text-amber-600" />
+            <div className="text-2xl font-bold text-foreground">{newStats.rdmRewardsEarned}</div>
+            <div className="text-sm text-muted-foreground">RDM Rewards Earned</div>
+          </CardContent>
+        </Card>
+        
+        <Card 
+          className="text-center border-2 border-blue-500 bg-blue-50 cursor-pointer hover:bg-blue-100 transition-colors"
+          onClick={() => navigate('/rdm-rewards-given')}
+        >
+          <CardContent className="p-4">
+            <Send className="h-8 w-8 mx-auto mb-2 text-blue-600" />
+            <div className="text-2xl font-bold text-foreground">{newStats.rdmRewardsGiven}</div>
+            <div className="text-sm text-muted-foreground">RDM Rewards Given</div>
+          </CardContent>
+        </Card>
+        
+        <Card 
+          className="text-center border-2 border-purple-500 bg-purple-50 cursor-pointer hover:bg-purple-100 transition-colors"
+          onClick={() => navigate('/rdm-remorse-bucket')}
+        >
+          <CardContent className="p-4">
+            <Frown className="h-8 w-8 mx-auto mb-2 text-purple-600" />
+            <div className="text-2xl font-bold text-foreground">{newStats.rdmRemorseBucket}</div>
+            <div className="text-sm text-muted-foreground">RDM Remorse Bucket</div>
           </CardContent>
         </Card>
       </div>

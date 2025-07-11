@@ -46,13 +46,18 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         // Check if user is logged in
         const authData = localStorage.getItem('rdm-auth');
         if (authData) {
+          const parsedAuth = JSON.parse(authData);
           setIsAuthenticated(true);
           
-          // Load user data
+          // Load user data only for login (not signup)
           const existingData = localStorage.getItem('rdm-goals');
-          if (existingData) {
+          if (existingData && parsedAuth.loginTime) {
+            // Only skip wizard if user logged in (has loginTime) and has existing goals
             setStore(JSON.parse(existingData));
             setIsFirstLaunch(false);
+          } else if (parsedAuth.signupTime) {
+            // New signup users should always go through wizard
+            setIsFirstLaunch(true);
           }
         }
       } catch (error) {

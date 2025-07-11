@@ -17,9 +17,12 @@ export const SplashLoader: React.FC = () => {
           clearInterval(interval);
           // Navigate after animation completes
           setTimeout(() => {
+            console.log('🚀 SplashLoader navigation - isFirstLaunch:', isFirstLaunch);
             if (isFirstLaunch) {
+              console.log('✨ Navigating to simple-wizard');
               navigate('/simple-wizard');
             } else {
+              console.log('🏠 Navigating to dashboard');
               navigate('/home?tab=dashboard');
             }
           }, 500);

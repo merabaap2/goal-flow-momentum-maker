@@ -45,21 +45,34 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       try {
         // Check if user is logged in
         const authData = localStorage.getItem('rdm-auth');
+        console.log('🔍 Auth check - authData:', authData);
+        
         if (authData) {
           const parsedAuth = JSON.parse(authData);
+          console.log('🔍 Parsed auth:', parsedAuth);
           setIsAuthenticated(true);
           
           // Load user data only for login (not signup)
           const existingData = localStorage.getItem('rdm-goals');
+          console.log('🔍 Existing goals data:', existingData);
+          
           if (existingData && parsedAuth.loginTime) {
             // Only skip wizard if user logged in (has loginTime) and has existing goals
+            console.log('✅ Returning user with goals - going to dashboard');
             setStore(JSON.parse(existingData));
             setIsFirstLaunch(false);
           } else if (parsedAuth.signupTime) {
             // New signup users should always go through wizard
+            console.log('🎯 New signup user - going to wizard');
+            setIsFirstLaunch(true);
+          } else if (parsedAuth.loginTime && !existingData) {
+            // Login user but no goals data - go to wizard
+            console.log('🎯 Returning user without goals - going to wizard');
             setIsFirstLaunch(true);
           }
         }
+        
+        console.log('🚀 Final isFirstLaunch state:', isFirstLaunch);
       } catch (error) {
         console.error('Error loading data:', error);
       } finally {
@@ -111,9 +124,11 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       
+      console.log('📝 Signup successful - setting new user state');
       localStorage.setItem('rdm-auth', JSON.stringify({ email, name, signupTime: Date.now() }));
       setIsAuthenticated(true);
       setIsFirstLaunch(true); // New users should go through wizard
+      console.log('🎯 Signup complete - isFirstLaunch set to true');
       
       return true;
     } catch (error) {

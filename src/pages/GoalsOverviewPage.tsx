@@ -48,34 +48,7 @@ export const GoalsOverviewPage: React.FC = () => {
         </div>
 
         {/* Goals Summary */}
-        <Card className="border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-primary/10">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-primary">
-              <Target className="h-5 w-5" />
-              Total Goals: {store.dreams.length}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-blue-50 border-2 border-blue-200 rounded-lg hover:bg-blue-100 transition-colors cursor-pointer" onClick={() => setActiveTab("bucket-list")}>
-                <div className="text-2xl font-bold text-blue-600">{store.dreams.length}</div>
-                <div className="text-sm text-blue-600">Bucket List Items</div>
-              </div>
-              <div className="text-center p-4 bg-green-50 border-2 border-green-200 rounded-lg hover:bg-green-100 transition-colors cursor-pointer" onClick={() => setActiveTab("medium-goals")}>
-                <div className="text-2xl font-bold text-green-600">
-                  {store.dreams.reduce((acc, dream) => acc + dream.enablers.length, 0)}
-                </div>
-                <div className="text-sm text-green-600">Medium-term Goals</div>
-              </div>
-              <div className="text-center p-4 bg-purple-50 border-2 border-purple-200 rounded-lg hover:bg-purple-100 transition-colors cursor-pointer" onClick={() => setActiveTab("short-goals")}>
-                <div className="text-2xl font-bold text-purple-600">
-                  {store.dreams.reduce((acc, dream) => acc + dream.enablers.reduce((subAcc: number, enabler: any) => subAcc + enabler.shortGoals.length, 0), 0)}
-                </div>
-                <div className="text-sm text-purple-600">Short-term Actions</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        
 
         {/* Interactive Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">

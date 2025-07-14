@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { ArrowLeft, User, ChevronDown } from 'lucide-react';
+import { ArrowLeft, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { BottomNav } from '@/components/ui/BottomNav';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 
 interface Contact {
   id: string;
@@ -19,7 +20,9 @@ export const RDMRewardsEarnedPage: React.FC = () => {
   
   // State management
   const [selectedReward, setSelectedReward] = useState<string>('');
-  const [rewardAmount, setRewardAmount] = useState<number>(0);
+  const [rewardExitAmount, setRewardExitAmount] = useState<number>(0);
+  const [rewardOtherAmount, setRewardOtherAmount] = useState<number>(0);
+  const [remorseSelfAmount, setRemorseSelfAmount] = useState<number>(0);
   const [selectedContact, setSelectedContact] = useState<string>('');
   const [balanceCalculated, setBalanceCalculated] = useState<boolean>(false);
 
@@ -32,34 +35,41 @@ export const RDMRewardsEarnedPage: React.FC = () => {
     { id: '5', name: 'Alex Wilson', email: 'alex@example.com' },
   ];
 
-  // Calculate base points from completed tasks and habits
-  const calculateBasePoints = () => {
-    const completedTasks = store.dreams.reduce((acc, dream) => 
+  // Calculate today's base points (current earnings)
+  const calculateTodayBasePoints = () => {
+    const today = new Date().toDateString();
+    
+    // Get today's completed tasks
+    const todayTasks = store.dreams.reduce((acc, dream) => 
       acc + dream.enablers.reduce((subAcc: number, enabler: any) => 
-        subAcc + enabler.shortGoals.filter((goal: any) => goal.done).length, 0
+        subAcc + enabler.shortGoals.filter((goal: any) => 
+          goal.done && goal.completedAt && new Date(goal.completedAt).toDateString() === today
+        ).length, 0
       ), 0
     );
     
-    const completedHabits = store.dreams.reduce((acc, dream) => 
+    // Get today's completed habits
+    const todayHabits = store.dreams.reduce((acc, dream) => 
       acc + dream.enablers.reduce((subAcc: number, enabler: any) => 
-        subAcc + enabler.dailyHabits.reduce((habitAcc: number, habit: any) => habitAcc + habit.history.length, 0), 0
+        subAcc + enabler.dailyHabits.reduce((habitAcc: number, habit: any) => 
+          habitAcc + habit.history.filter((entry: any) => 
+            new Date(entry.date).toDateString() === today
+          ).length, 0
+        ), 0
       ), 0
     );
 
-    return (completedTasks * 10) + (completedHabits * 5);
+    return (todayTasks * 10) + (todayHabits * 5);
   };
 
-  const basePoints = calculateBasePoints();
+  const basePoints = calculateTodayBasePoints();
 
-  // Handle reward selection
-  const handleRewardSelection = (type: string, amount: number) => {
-    setSelectedReward(type);
-    setRewardAmount(amount);
-  };
+  // Calculate total amount from all inputs
+  const totalAmount = rewardExitAmount + rewardOtherAmount + remorseSelfAmount;
 
   // Handle submit
   const handleSubmit = () => {
-    if (selectedReward && rewardAmount > 0) {
+    if (totalAmount > 0) {
       setBalanceCalculated(true);
     }
   };
@@ -67,14 +77,19 @@ export const RDMRewardsEarnedPage: React.FC = () => {
   // Calculate balance summary after submit
   const getBalanceSummary = () => {
     if (!balanceCalculated) {
-      return { total: 0, rewardSelf: 0, remorse: 0 };
+      return { total: basePoints, rewardSelf: 0, remorse: 0 };
     }
     
-    const total = basePoints - rewardAmount;
-    const rewardSelf = selectedReward === 'self' ? rewardAmount : 0;
-    const remorse = selectedReward === 'self' ? 0 : Math.max(0, rewardAmount - 50);
+    const remaining = basePoints - totalAmount;
+    const rewardSelf = selectedReward === 'exit' ? rewardExitAmount : 
+                      selectedReward === 'other' ? rewardOtherAmount : 0;
+    const remorse = remorseSelfAmount;
     
-    return { total, rewardSelf, remorse };
+    return { 
+      total: remaining, 
+      rewardSelf: rewardSelf, 
+      remorse: remorse 
+    };
   };
 
   const balanceSummary = getBalanceSummary();
@@ -118,7 +133,7 @@ export const RDMRewardsEarnedPage: React.FC = () => {
                       ? 'border-blue-500 bg-blue-50' 
                       : 'border-gray-200 bg-gray-50 hover:border-gray-300'
                   }`}
-                  onClick={() => handleRewardSelection('exit', 100)}
+                  onClick={() => setSelectedReward('exit')}
                 >
                   <div className="flex items-center gap-3">
                     <div className={`w-4 h-4 rounded-full border-2 ${
@@ -130,9 +145,15 @@ export const RDMRewardsEarnedPage: React.FC = () => {
                     </div>
                     <span className="font-medium">Reward (exit)</span>
                   </div>
-                  <div className="bg-white px-4 py-2 rounded-md border font-semibold text-gray-700">
-                    100
-                  </div>
+                  <Input
+                    type="number"
+                    value={rewardExitAmount || ''}
+                    onChange={(e) => setRewardExitAmount(Number(e.target.value) || 0)}
+                    className="w-20 h-10 text-center font-semibold"
+                    min="0"
+                    max={basePoints}
+                    onClick={(e) => e.stopPropagation()}
+                  />
                 </div>
 
                 {/* Reward (other) */}
@@ -142,7 +163,7 @@ export const RDMRewardsEarnedPage: React.FC = () => {
                       ? 'border-purple-500 bg-purple-50' 
                       : 'border-gray-200 bg-gray-50 hover:border-gray-300'
                   }`}
-                  onClick={() => handleRewardSelection('other', 105)}
+                  onClick={() => setSelectedReward('other')}
                 >
                   <div className="flex items-center gap-3">
                     <div className={`w-4 h-4 rounded-full border-2 ${
@@ -173,19 +194,25 @@ export const RDMRewardsEarnedPage: React.FC = () => {
                       </Select>
                     )</span>
                   </div>
-                  <div className="bg-white px-4 py-2 rounded-md border font-semibold text-gray-700">
-                    105
-                  </div>
+                  <Input
+                    type="number"
+                    value={rewardOtherAmount || ''}
+                    onChange={(e) => setRewardOtherAmount(Number(e.target.value) || 0)}
+                    className="w-20 h-10 text-center font-semibold"
+                    min="0"
+                    max={basePoints}
+                    onClick={(e) => e.stopPropagation()}
+                  />
                 </div>
 
-                {/* Reward (self) */}
+                {/* Remorse (self) */}
                 <div 
                   className={`flex items-center justify-between p-4 rounded-lg border-2 cursor-pointer transition-all ${
                     selectedReward === 'self' 
                       ? 'border-orange-500 bg-orange-50' 
                       : 'border-gray-200 bg-gray-50 hover:border-gray-300'
                   }`}
-                  onClick={() => handleRewardSelection('self', 10)}
+                  onClick={() => setSelectedReward('self')}
                 >
                   <div className="flex items-center gap-3">
                     <div className={`w-4 h-4 rounded-full border-2 ${
@@ -197,9 +224,15 @@ export const RDMRewardsEarnedPage: React.FC = () => {
                     </div>
                     <span className="font-medium">Remorse (self)</span>
                   </div>
-                  <div className="bg-white px-4 py-2 rounded-md border font-semibold text-gray-700">
-                    10
-                  </div>
+                  <Input
+                    type="number"
+                    value={remorseSelfAmount || ''}
+                    onChange={(e) => setRemorseSelfAmount(Number(e.target.value) || 0)}
+                    className="w-20 h-10 text-center font-semibold"
+                    min="0"
+                    max={basePoints}
+                    onClick={(e) => e.stopPropagation()}
+                  />
                 </div>
               </div>
             </div>
@@ -207,16 +240,16 @@ export const RDMRewardsEarnedPage: React.FC = () => {
             {/* Total Amount */}
             <div className="flex justify-between items-center p-4 bg-gradient-to-r from-slate-50 to-gray-50 rounded-lg border-t-2 border-gray-300">
               <span className="text-lg font-semibold text-gray-800">Total Amount</span>
-              <span className="text-2xl font-bold text-gray-700">{rewardAmount}</span>
+              <span className="text-2xl font-bold text-gray-700">{totalAmount}</span>
             </div>
 
             {/* Submit Button */}
             <Button 
               onClick={handleSubmit}
-              disabled={!selectedReward || rewardAmount === 0}
+              disabled={totalAmount === 0}
               className="w-full py-3 text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-300 disabled:to-gray-400 transition-all duration-200"
             >
-              Calculate Balance
+              Submit
             </Button>
 
             {/* Balance Summary */}

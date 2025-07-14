@@ -13,11 +13,11 @@ export const generateGeminiSuggestions = async (prompt: string, context?: string
         messages: [
           {
             role: 'system',
-            content: 'You MUST provide EXACTLY 3 suggestions. Each suggestion is a single paragraph that naturally fits in 2 lines when displayed (15-20 words total max). Keep it SHORT and concise. No line breaks - just natural flowing text.'
+            content: 'You are an AI assistant that follows specific prompt templates exactly as provided. Return only clean JSON arrays with no additional text or formatting.'
           },
           {
             role: 'user',
-            content: `Goal: "${context?.replace('User\'s dream: ', '') || prompt}"\n\nYou MUST return your response in this EXACT JSON format - no other text:\n\n["suggestion 1", "suggestion 2", "suggestion 3"]\n\nEach suggestion must be 15-20 words max and focus on daily actionable steps.`
+            content: prompt
           }
         ],
         temperature: 0.8,

@@ -45,9 +45,62 @@ export const SimpleDailyStep: React.FC<SimpleDailyStepProps> = ({
   const generateSuggestions = async () => {
     setIsGenerating(true);
     try {
-      const prompt = `For the bucket list dream: "${bucketItem}" with a ${timeline}-year timeline, what are 3 small daily habits (5-30 minutes each) that will consistently build towards this goal? Focus on micro-habits that compound over ${timeline} years.`;
-      const aiSuggestions = await generateGeminiSuggestions(prompt, `User's dream: ${bucketItem}, Timeline: ${timeline} years`);
-      setSuggestions(aiSuggestions);
+      // For daily habits, we need to reference a short goal, but in this simplified flow we don't have one
+      // So we'll use the bucket item as the short goal context
+      const shortGoal = `Work towards ${bucketItem}`;
+      const enabler = `Achieve ${bucketItem}`;
+      
+      const prompt = `You are a micro-habit strategist inside the **RDM Goal-Filter** app.
+
+## Context
+DREAM         = "${bucketItem}"
+ENABLER       = "${enabler}"
+SHORT_GOAL    = {
+  "detail": "${shortGoal}",
+  "duration_months": 12
+}
+
+## Task
+Propose **1-2 Daily (or Weekly) Habits** that:
+
+1. Fit into ≤ 30 minutes per session.  
+2. Can run continuously for the entire SHORT_GOAL window.  
+3. Directly accelerate completion of SHORT_GOAL, hence ENABLER & DREAM.  
+4. Are specific, measurable, and friction-light (no rare resources).  
+5. Avoid duplication with other habits the user may have for different goals.
+
+If no meaningful habit exists, return an empty list.
+
+## Output format (JSON only)
+\`\`\`json
+{
+  "short_goal": "${shortGoal}",
+  "daily_habits": [
+    {
+      "habit": "<concise action>",
+      "frequency": "daily | mon-wed-fri | weekly",
+      "time_per_action_minutes": N,
+      "why_it_helps": "<≤ 12 words>"
+    }
+  ]
+}
+\`\`\``;
+      
+      const response = await generateGeminiSuggestions(prompt);
+      
+      // Parse the structured response and extract just the habits
+      try {
+        const data = JSON.parse(response[0] || '{}');
+        if (data.daily_habits && Array.isArray(data.daily_habits)) {
+          const habitNames = data.daily_habits.map((habit: any) => habit.habit);
+          setSuggestions(habitNames.slice(0, 3));
+        } else {
+          throw new Error('Invalid format');
+        }
+      } catch (parseError) {
+        // Fallback to the raw response if parsing fails
+        setSuggestions(response.slice(0, 3));
+      }
     } catch (error) {
       console.error('Failed to generate suggestions:', error);
       setSuggestions([

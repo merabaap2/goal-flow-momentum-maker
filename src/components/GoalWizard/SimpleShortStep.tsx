@@ -47,10 +47,57 @@ export const SimpleShortStep: React.FC<SimpleShortStepProps> = ({
   const generateSuggestions = async () => {
     setIsGenerating(true);
     try {
-      const mediumGoalContext = mediumGoals.length > 0 ? ` considering these medium-term goals: ${mediumGoals.join(', ')}` : '';
-      const prompt = `For the bucket list dream: "${bucketItem}" with a ${timeline}-year timeline${mediumGoalContext}, what are 3 short-term actions (next 1-3 months) that someone can take to make immediate progress? Focus on specific, actionable steps that align with the overall ${timeline}-year plan.`;
-      const aiSuggestions = await generateGeminiSuggestions(prompt, `User's dream: ${bucketItem}, Timeline: ${timeline} years, Medium goals: ${mediumGoals.join(', ')}`);
-      setSuggestions(aiSuggestions);
+      const enabler = mediumGoals.length > 0 ? mediumGoals[0] : 'the medium-term milestone';
+      const prompt = `You are a tactical goal-setting assistant inside the **RDM Goal-Filter** app.
+
+## Context
+OVERALL_ETA_YEARS = ${timeline}
+DREAM = "${bucketItem}"
+ENABLER = {
+  "name": "${enabler}",
+  "duration_years": ${Math.ceil(timeline * 0.5)}
+}
+
+## Task
+Suggest **2-3 Short-Term Goals** that:
+
+1. Can be **fully completed within 12 months** (≤ 1 year, ideally 3-9 months).  
+2. Logically advance the ENABLER and therefore the DREAM.  
+3. Are concrete, measurable, and realistic for a motivated adult.  
+4. Require no backend context (offline-first).  
+5. Do **not** overlap with other suggested short-term goals for the same enabler.
+
+If you cannot propose meaningful goals, return an empty list.
+
+## Output format (JSON only)
+\`\`\`json
+{
+  "enabler": "${enabler}",
+  "short_goals": [
+    {
+      "detail": "<concise project/action>",
+      "duration_months": N,
+      "why_it_helps": "<≤ 15 words>"
+    }
+  ]
+}
+\`\`\``;
+      
+      const response = await generateGeminiSuggestions(prompt);
+      
+      // Parse the structured response and extract just the details
+      try {
+        const data = JSON.parse(response[0] || '{}');
+        if (data.short_goals && Array.isArray(data.short_goals)) {
+          const goalDetails = data.short_goals.map((goal: any) => goal.detail);
+          setSuggestions(goalDetails.slice(0, 3));
+        } else {
+          throw new Error('Invalid format');
+        }
+      } catch (parseError) {
+        // Fallback to the raw response if parsing fails
+        setSuggestions(response.slice(0, 3));
+      }
     } catch (error) {
       console.error('Failed to generate suggestions:', error);
       setSuggestions([

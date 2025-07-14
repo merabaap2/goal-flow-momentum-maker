@@ -38,9 +38,56 @@ export const SimpleMediumStep: React.FC<SimpleMediumStepProps> = ({
   const generateSuggestions = async () => {
     setIsGenerating(true);
     try {
-      const prompt = `For the bucket list dream: "${bucketItem}" with a ${timeline}-year timeline, what are 3 medium-term goals (6 months to 2 years) that will help achieve this dream? Consider the timeline and focus on specific, actionable milestones that build toward the final goal.`;
-      const aiSuggestions = await generateGeminiSuggestions(prompt, `User's dream: ${bucketItem}, Timeline: ${timeline} years`);
-      setSuggestions(aiSuggestions);
+      const prompt = `You are a strategic goal-setting assistant embedded in the **RDM Goal-Filter** mobile app.
+
+## Context
+The user has finished Step 2 of the wizard and set a global completion horizon:
+
+OVERALL_ETA_YEARS = ${timeline}
+BUCKET_LIST = [
+  "${bucketItem}"
+]
+
+## Task
+For **each** dream, output 2-3 **Long / Medium-Term Enablers** that:
+
+1. Require ≈ 30 % – 70 % of OVERALL_ETA_YEARS to finish  
+   (e.g., ETA = 10 → enabler duration 3-7 yrs).  
+2. Directly unlock that dream (skip generic "save money" unless money is the clear blocker).  
+3. Are concrete, measurable, and realistic for a motivated adult.  
+4. Do *not* clash with other dreams; avoid duplicates across dreams.
+
+## Output format (JSON only)
+\`\`\`json
+[
+  {
+    "dream": "${bucketItem}",
+    "enablers": [
+      {
+        "name": "<concise milestone>",
+        "duration_years": X,
+        "why_it_helps": "<1-sentence rationale>"
+      }
+    ]
+  }
+]
+\`\`\``;
+      
+      const response = await generateGeminiSuggestions(prompt);
+      
+      // Parse the structured response and extract just the names
+      try {
+        const data = JSON.parse(response[0] || '[]');
+        if (Array.isArray(data) && data[0] && data[0].enablers) {
+          const enablerNames = data[0].enablers.map((enabler: any) => enabler.name);
+          setSuggestions(enablerNames.slice(0, 3));
+        } else {
+          throw new Error('Invalid format');
+        }
+      } catch (parseError) {
+        // Fallback to the raw response if parsing fails
+        setSuggestions(response.slice(0, 3));
+      }
     } catch (error) {
       console.error('Failed to generate suggestions:', error);
       setSuggestions(['Research and plan the first steps toward your dream', 'Build the necessary skills and knowledge base', 'Create a network of people who share similar aspirations']);

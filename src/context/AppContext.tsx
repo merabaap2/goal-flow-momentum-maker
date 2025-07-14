@@ -56,19 +56,29 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
           const existingData = localStorage.getItem('rdm-goals');
           console.log('🔍 Existing goals data:', existingData);
           
-          if (existingData && parsedAuth.loginTime) {
-            // Only skip wizard if user logged in (has loginTime) and has existing goals
-            console.log('✅ Returning user with goals - going to dashboard');
+          if (existingData) {
+            // Load existing goals data regardless of login/signup status
+            console.log('✅ Loading existing goals data');
             setStore(JSON.parse(existingData));
-            setIsFirstLaunch(false);
-          } else if (parsedAuth.signupTime) {
-            // New signup users should always go through wizard
-            console.log('🎯 New signup user - going to wizard');
-            setIsFirstLaunch(true);
-          } else if (parsedAuth.loginTime && !existingData) {
-            // Login user but no goals data - go to wizard
-            console.log('🎯 Returning user without goals - going to wizard');
-            setIsFirstLaunch(true);
+            
+            if (parsedAuth.loginTime) {
+              // Returning user with goals - skip wizard
+              console.log('✅ Returning user with goals - going to dashboard');
+              setIsFirstLaunch(false);
+            } else if (parsedAuth.signupTime) {
+              // New signup user with goals (shouldn't happen but handle it)
+              console.log('🎯 Signup user with existing goals - going to wizard');
+              setIsFirstLaunch(true);
+            }
+          } else {
+            // No existing goals data
+            if (parsedAuth.signupTime) {
+              console.log('🎯 New signup user - going to wizard');
+              setIsFirstLaunch(true);
+            } else if (parsedAuth.loginTime) {
+              console.log('🎯 Returning user without goals - going to wizard');
+              setIsFirstLaunch(true);
+            }
           }
         }
         

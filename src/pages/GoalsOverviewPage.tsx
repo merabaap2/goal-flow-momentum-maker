@@ -42,7 +42,7 @@ export const GoalsOverviewPage: React.FC = () => {
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div className="flex-1">
-            <h1 className="text-3xl font-bold">Goals Overview</h1>
+            <h1 className="text-3xl font-bold">BucketList Overview</h1>
             <p className="text-muted-foreground">Track all your bucket list dreams and goals</p>
           </div>
         </div>

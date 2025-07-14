@@ -7,7 +7,9 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Target, CheckCircle2, XCircle, Gift, Send, Frown } from 'lucide-react';
 export const Dashboard: React.FC = () => {
-  const { store } = useApp();
+  const {
+    store
+  } = useApp();
   const navigate = useNavigate();
 
   // Calculate progress for each dream
@@ -31,20 +33,19 @@ export const Dashboard: React.FC = () => {
   // Get new dashboard statistics
   const getNewDashboardStats = () => {
     const totalGoals = store.dreams.length; // Total bucket list items/goals
-    
+
     // Calculate successful goals based on completed enablers/medium goals
     const successfulGoals = store.dreams.filter(dream => {
       const totalShortGoals = dream.enablers.reduce((acc, enabler) => acc + enabler.shortGoals.length, 0);
       const completedShortGoals = dream.enablers.reduce((acc, enabler) => acc + enabler.shortGoals.filter(goal => goal.done).length, 0);
       // Consider a dream successful if more than 80% of its short goals are completed
-      return totalShortGoals > 0 && (completedShortGoals / totalShortGoals) >= 0.8;
+      return totalShortGoals > 0 && completedShortGoals / totalShortGoals >= 0.8;
     }).length;
-    
     const failedGoals = 0; // For now, we'll consider this as goals that are overdue or marked as failed
     const rdmRewardsEarned = 0; // Placeholder - this would come from your RDM system
     const rdmRewardsGiven = 0; // Placeholder - this would come from your RDM system
     const rdmRemorseBucket = 0; // Placeholder - this would come from your RDM system
-    
+
     return {
       totalGoals,
       successfulGoals,
@@ -81,10 +82,7 @@ export const Dashboard: React.FC = () => {
       <div className="space-y-4">
         {/* First Row - Goals Related */}
         <div className="grid grid-cols-3 gap-4">
-          <Card 
-            className="text-center border-2 border-primary bg-primary/5 cursor-pointer hover:bg-primary/10 transition-colors"
-            onClick={() => navigate('/goals-overview')}
-          >
+          <Card className="text-center border-2 border-primary bg-primary/5 cursor-pointer hover:bg-primary/10 transition-colors" onClick={() => navigate('/goals-overview')}>
             <CardContent className="p-4">
               <Target className="h-8 w-8 mx-auto mb-2 text-primary" />
               <div className="text-2xl font-bold text-foreground">{newStats.totalGoals}</div>
@@ -92,10 +90,7 @@ export const Dashboard: React.FC = () => {
             </CardContent>
           </Card>
           
-          <Card 
-            className="text-center border-2 border-green-500 bg-green-50 cursor-pointer hover:bg-green-100 transition-colors"
-            onClick={() => navigate('/goals-success')}
-          >
+          <Card className="text-center border-2 border-green-500 bg-green-50 cursor-pointer hover:bg-green-100 transition-colors" onClick={() => navigate('/goals-success')}>
             <CardContent className="p-4">
               <CheckCircle2 className="h-8 w-8 mx-auto mb-2 text-green-600" />
               <div className="text-2xl font-bold text-foreground">{newStats.successfulGoals}</div>
@@ -103,10 +98,7 @@ export const Dashboard: React.FC = () => {
             </CardContent>
           </Card>
           
-          <Card 
-            className="text-center border-2 border-red-500 bg-red-50 cursor-pointer hover:bg-red-100 transition-colors"
-            onClick={() => navigate('/goals-failed')}
-          >
+          <Card className="text-center border-2 border-red-500 bg-red-50 cursor-pointer hover:bg-red-100 transition-colors" onClick={() => navigate('/goals-failed')}>
             <CardContent className="p-4">
               <XCircle className="h-8 w-8 mx-auto mb-2 text-red-600" />
               <div className="text-2xl font-bold text-foreground">{newStats.failedGoals}</div>
@@ -117,10 +109,7 @@ export const Dashboard: React.FC = () => {
         
         {/* Second Row - RDM Related */}
         <div className="grid grid-cols-3 gap-4">
-          <Card 
-            className="text-center border-2 border-amber-500 bg-amber-50 cursor-pointer hover:bg-amber-100 transition-colors"
-            onClick={() => navigate('/rdm-rewards-earned')}
-          >
+          <Card className="text-center border-2 border-amber-500 bg-amber-50 cursor-pointer hover:bg-amber-100 transition-colors" onClick={() => navigate('/rdm-rewards-earned')}>
             <CardContent className="p-4">
               <Gift className="h-8 w-8 mx-auto mb-2 text-amber-600" />
               <div className="text-2xl font-bold text-foreground">{newStats.rdmRewardsEarned}</div>
@@ -128,10 +117,7 @@ export const Dashboard: React.FC = () => {
             </CardContent>
           </Card>
           
-          <Card 
-            className="text-center border-2 border-blue-500 bg-blue-50 cursor-pointer hover:bg-blue-100 transition-colors"
-            onClick={() => navigate('/rdm-rewards-given')}
-          >
+          <Card className="text-center border-2 border-blue-500 bg-blue-50 cursor-pointer hover:bg-blue-100 transition-colors" onClick={() => navigate('/rdm-rewards-given')}>
             <CardContent className="p-4">
               <Send className="h-8 w-8 mx-auto mb-2 text-blue-600" />
               <div className="text-2xl font-bold text-foreground">{newStats.rdmRewardsGiven}</div>
@@ -139,10 +125,7 @@ export const Dashboard: React.FC = () => {
             </CardContent>
           </Card>
           
-          <Card 
-            className="text-center border-2 border-purple-500 bg-purple-50 cursor-pointer hover:bg-purple-100 transition-colors"
-            onClick={() => navigate('/rdm-remorse-bucket')}
-          >
+          <Card className="text-center border-2 border-purple-500 bg-purple-50 cursor-pointer hover:bg-purple-100 transition-colors" onClick={() => navigate('/rdm-remorse-bucket')}>
             <CardContent className="p-4">
               <Frown className="h-8 w-8 mx-auto mb-2 text-purple-600" />
               <div className="text-2xl font-bold text-foreground">{newStats.rdmRemorseBucket}</div>
@@ -162,20 +145,9 @@ export const Dashboard: React.FC = () => {
       
 
       {/* Today's Habits */}
-      {todayHabits.total > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              📅 Today's Habits
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <span>{todayHabits.completed} of {todayHabits.total} completed</span>
-              <Progress value={(todayHabits.completed / todayHabits.total) * 100} className="w-32" />
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      {todayHabits.total > 0 && <Card>
+          
+          
+        </Card>}
     </div>;
 };

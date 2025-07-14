@@ -38,61 +38,59 @@ export const SimpleMediumStep: React.FC<SimpleMediumStepProps> = ({
   const generateSuggestions = async () => {
     setIsGenerating(true);
     try {
-      const prompt = `You are a strategic goal-setting assistant embedded in the **RDM Goal-Filter** mobile app.
+      // Simplified approach - ask for direct suggestions
+      const prompt = `For someone who wants to "${bucketItem}" over ${timeline} years, suggest 3 specific medium-term goals (taking 2-7 years each) that directly enable this dream. 
 
-## Context
-The user has finished Step 2 of the wizard and set a global completion horizon:
+Return ONLY a JSON array of strings like this:
+["goal 1", "goal 2", "goal 3"]
 
-OVERALL_ETA_YEARS = ${timeline}
-BUCKET_LIST = [
-  "${bucketItem}"
-]
-
-## Task
-For **each** dream, output 2-3 **Long / Medium-Term Enablers** that:
-
-1. Require ≈ 30 % – 70 % of OVERALL_ETA_YEARS to finish  
-   (e.g., ETA = 10 → enabler duration 3-7 yrs).  
-2. Directly unlock that dream (skip generic "save money" unless money is the clear blocker).  
-3. Are concrete, measurable, and realistic for a motivated adult.  
-4. Do *not* clash with other dreams; avoid duplicates across dreams.
-
-## Output format (JSON only)
-\`\`\`json
-[
-  {
-    "dream": "${bucketItem}",
-    "enablers": [
-      {
-        "name": "<concise milestone>",
-        "duration_years": X,
-        "why_it_helps": "<1-sentence rationale>"
-      }
-    ]
-  }
-]
-\`\`\``;
+Focus on concrete, actionable milestones specific to "${bucketItem}".`;
       
-      const response = await generateGeminiSuggestions(prompt);
-      
-      // Parse the structured response and extract just the names
-      try {
-        const data = JSON.parse(response[0] || '[]');
-        if (Array.isArray(data) && data[0] && data[0].enablers) {
-          const enablerNames = data[0].enablers.map((enabler: any) => enabler.name);
-          setSuggestions(enablerNames.slice(0, 3));
-        } else {
-          throw new Error('Invalid format');
-        }
-      } catch (parseError) {
-        // Fallback to the raw response if parsing fails
-        setSuggestions(response.slice(0, 3));
-      }
+      const aiSuggestions = await generateGeminiSuggestions(prompt);
+      setSuggestions(aiSuggestions);
     } catch (error) {
       console.error('Failed to generate suggestions:', error);
-      setSuggestions(['Research and plan the first steps toward your dream', 'Build the necessary skills and knowledge base', 'Create a network of people who share similar aspirations']);
+      // Provide contextual fallback based on the bucket item
+      const fallbacks = generateContextualFallbacks(bucketItem, timeline);
+      setSuggestions(fallbacks);
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  const generateContextualFallbacks = (dream: string, years: number): string[] => {
+    const dreamLower = dream.toLowerCase();
+    
+    if (dreamLower.includes('travel') || dreamLower.includes('world') || dreamLower.includes('countries')) {
+      return [
+        'Save and budget for travel expenses across all destinations',
+        'Research and plan detailed itineraries for each wonder',
+        'Build travel skills and international experience'
+      ];
+    } else if (dreamLower.includes('business') || dreamLower.includes('startup') || dreamLower.includes('company')) {
+      return [
+        'Develop core business skills and industry expertise',
+        'Build professional network and find mentors',
+        'Create detailed business plan and secure initial funding'
+      ];
+    } else if (dreamLower.includes('learn') || dreamLower.includes('skill') || dreamLower.includes('education')) {
+      return [
+        'Master foundational knowledge and basic concepts',
+        'Gain practical experience through projects',
+        'Obtain relevant certifications or qualifications'
+      ];
+    } else if (dreamLower.includes('health') || dreamLower.includes('fitness') || dreamLower.includes('weight')) {
+      return [
+        'Establish sustainable exercise and nutrition habits',
+        'Build knowledge about health and wellness',
+        'Create support systems and track progress'
+      ];
+    } else {
+      return [
+        `Research and understand requirements for ${dream}`,
+        `Develop the core skills needed for ${dream}`,
+        `Build connections with people who have achieved ${dream}`
+      ];
     }
   };
   const applySuggestion = (suggestion: string) => {

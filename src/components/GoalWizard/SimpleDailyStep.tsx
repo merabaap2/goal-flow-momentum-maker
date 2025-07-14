@@ -45,71 +45,58 @@ export const SimpleDailyStep: React.FC<SimpleDailyStepProps> = ({
   const generateSuggestions = async () => {
     setIsGenerating(true);
     try {
-      // For daily habits, we need to reference a short goal, but in this simplified flow we don't have one
-      // So we'll use the bucket item as the short goal context
-      const shortGoal = `Work towards ${bucketItem}`;
-      const enabler = `Achieve ${bucketItem}`;
+      const prompt = `For someone who wants to "${bucketItem}" over ${timeline} years, suggest 3 small daily habits (5-30 minutes each) that will build towards this goal.
+
+Return ONLY a JSON array of strings like this:
+["habit 1", "habit 2", "habit 3"]
+
+Focus on simple, consistent habits specific to "${bucketItem}".`;
       
-      const prompt = `You are a micro-habit strategist inside the **RDM Goal-Filter** app.
-
-## Context
-DREAM         = "${bucketItem}"
-ENABLER       = "${enabler}"
-SHORT_GOAL    = {
-  "detail": "${shortGoal}",
-  "duration_months": 12
-}
-
-## Task
-Propose **1-2 Daily (or Weekly) Habits** that:
-
-1. Fit into ≤ 30 minutes per session.  
-2. Can run continuously for the entire SHORT_GOAL window.  
-3. Directly accelerate completion of SHORT_GOAL, hence ENABLER & DREAM.  
-4. Are specific, measurable, and friction-light (no rare resources).  
-5. Avoid duplication with other habits the user may have for different goals.
-
-If no meaningful habit exists, return an empty list.
-
-## Output format (JSON only)
-\`\`\`json
-{
-  "short_goal": "${shortGoal}",
-  "daily_habits": [
-    {
-      "habit": "<concise action>",
-      "frequency": "daily | mon-wed-fri | weekly",
-      "time_per_action_minutes": N,
-      "why_it_helps": "<≤ 12 words>"
-    }
-  ]
-}
-\`\`\``;
-      
-      const response = await generateGeminiSuggestions(prompt);
-      
-      // Parse the structured response and extract just the habits
-      try {
-        const data = JSON.parse(response[0] || '{}');
-        if (data.daily_habits && Array.isArray(data.daily_habits)) {
-          const habitNames = data.daily_habits.map((habit: any) => habit.habit);
-          setSuggestions(habitNames.slice(0, 3));
-        } else {
-          throw new Error('Invalid format');
-        }
-      } catch (parseError) {
-        // Fallback to the raw response if parsing fails
-        setSuggestions(response.slice(0, 3));
-      }
+      const aiSuggestions = await generateGeminiSuggestions(prompt);
+      setSuggestions(aiSuggestions);
     } catch (error) {
       console.error('Failed to generate suggestions:', error);
-      setSuggestions([
-        'Spend 15 minutes daily learning about your goal',
-        'Practice a key skill for 20 minutes each day',
-        'Journal about progress and next steps for 10 minutes'
-      ]);
+      // Provide contextual fallback based on the bucket item
+      const fallbacks = generateContextualFallbacks(bucketItem);
+      setSuggestions(fallbacks);
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  const generateContextualFallbacks = (dream: string): string[] => {
+    const dreamLower = dream.toLowerCase();
+    
+    if (dreamLower.includes('travel') || dreamLower.includes('world')) {
+      return [
+        'Save $20 daily in a dedicated travel fund',
+        'Learn 10 new words in local languages daily',
+        'Research one destination for 15 minutes daily'
+      ];
+    } else if (dreamLower.includes('business') || dreamLower.includes('startup')) {
+      return [
+        'Read business/industry news for 20 minutes daily',
+        'Work on business plan for 30 minutes daily',
+        'Network with one new person weekly'
+      ];
+    } else if (dreamLower.includes('learn') || dreamLower.includes('skill')) {
+      return [
+        'Practice the skill for 30 minutes daily',
+        'Read about the topic for 15 minutes daily',
+        'Connect with one practitioner weekly'
+      ];
+    } else if (dreamLower.includes('health') || dreamLower.includes('fitness')) {
+      return [
+        'Exercise for 30 minutes daily',
+        'Track meals and habits daily',
+        'Read health tips for 10 minutes daily'
+      ];
+    } else {
+      return [
+        `Spend 15 minutes daily learning about ${dream}`,
+        `Save money daily towards ${dream}`,
+        `Plan steps for ${dream} for 10 minutes daily`
+      ];
     }
   };
 

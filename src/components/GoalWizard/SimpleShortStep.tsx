@@ -47,66 +47,53 @@ export const SimpleShortStep: React.FC<SimpleShortStepProps> = ({
   const generateSuggestions = async () => {
     setIsGenerating(true);
     try {
-      const enabler = mediumGoals.length > 0 ? mediumGoals[0] : 'the medium-term milestone';
-      const prompt = `You are a tactical goal-setting assistant inside the **RDM Goal-Filter** app.
+      const mediumGoalContext = mediumGoals.length > 0 ? ` The medium-term goals are: ${mediumGoals.join(', ')}.` : '';
+      const prompt = `For someone who wants to "${bucketItem}" over ${timeline} years${mediumGoalContext} Suggest 3 specific short-term actions (1-12 months) they can take now to make progress.
 
-## Context
-OVERALL_ETA_YEARS = ${timeline}
-DREAM = "${bucketItem}"
-ENABLER = {
-  "name": "${enabler}",
-  "duration_years": ${Math.ceil(timeline * 0.5)}
-}
+Return ONLY a JSON array of strings like this:
+["action 1", "action 2", "action 3"]
 
-## Task
-Suggest **2-3 Short-Term Goals** that:
-
-1. Can be **fully completed within 12 months** (≤ 1 year, ideally 3-9 months).  
-2. Logically advance the ENABLER and therefore the DREAM.  
-3. Are concrete, measurable, and realistic for a motivated adult.  
-4. Require no backend context (offline-first).  
-5. Do **not** overlap with other suggested short-term goals for the same enabler.
-
-If you cannot propose meaningful goals, return an empty list.
-
-## Output format (JSON only)
-\`\`\`json
-{
-  "enabler": "${enabler}",
-  "short_goals": [
-    {
-      "detail": "<concise project/action>",
-      "duration_months": N,
-      "why_it_helps": "<≤ 15 words>"
-    }
-  ]
-}
-\`\`\``;
+Focus on immediate, actionable steps specific to "${bucketItem}".`;
       
-      const response = await generateGeminiSuggestions(prompt);
-      
-      // Parse the structured response and extract just the details
-      try {
-        const data = JSON.parse(response[0] || '{}');
-        if (data.short_goals && Array.isArray(data.short_goals)) {
-          const goalDetails = data.short_goals.map((goal: any) => goal.detail);
-          setSuggestions(goalDetails.slice(0, 3));
-        } else {
-          throw new Error('Invalid format');
-        }
-      } catch (parseError) {
-        // Fallback to the raw response if parsing fails
-        setSuggestions(response.slice(0, 3));
-      }
+      const aiSuggestions = await generateGeminiSuggestions(prompt);
+      setSuggestions(aiSuggestions);
     } catch (error) {
       console.error('Failed to generate suggestions:', error);
-      setSuggestions([
-        'Research and gather information about your dream',
-        'Create a detailed plan with specific deadlines',
-        'Take the first concrete step toward your goal'
-      ]);
+      // Provide contextual fallback based on the bucket item
+      const fallbacks = generateContextualFallbacks(bucketItem);
+      setSuggestions(fallbacks);
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  const generateContextualFallbacks = (dream: string): string[] => {
+    const dreamLower = dream.toLowerCase();
+    
+    if (dreamLower.includes('travel') || dreamLower.includes('world')) {
+      return [
+        'Get passport and research visa requirements',
+        'Start saving money and create travel budget',
+        'Research the 7 wonders and plan optimal route'
+      ];
+    } else if (dreamLower.includes('business') || dreamLower.includes('startup')) {
+      return [
+        'Write a business plan draft',
+        'Research your target market and competition',
+        'Network with other entrepreneurs and mentors'
+      ];
+    } else if (dreamLower.includes('learn') || dreamLower.includes('skill')) {
+      return [
+        'Enroll in an online course or find learning resources',
+        'Practice for 30 minutes daily',
+        'Join communities of people learning the same skill'
+      ];
+    } else {
+      return [
+        `Research the specific requirements for ${dream}`,
+        `Make a detailed plan with timelines`,
+        `Connect with people who have achieved ${dream}`
+      ];
     }
   };
 

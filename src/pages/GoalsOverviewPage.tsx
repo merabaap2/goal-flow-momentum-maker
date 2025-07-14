@@ -95,31 +95,7 @@ export const GoalsOverviewPage: React.FC = () => {
                 </CardContent>
               </Card> : store.dreams.map((dream: any) => {
             const progress = getGoalProgress(dream);
-            return <Card key={dream.id} className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-primary">
-                    <CardHeader>
-                      <CardTitle className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Star className="h-5 w-5 text-amber-500" />
-                          <span className="truncate">{dream.text}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Badge variant={progress === 100 ? "default" : "secondary"}>
-                            {progress}%
-                          </Badge>
-                          {progress === 100 && <CheckCircle className="h-5 w-5 text-green-500" />}
-                        </div>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        <Progress value={progress} className="h-3" />
-                        <div className="flex justify-between text-sm text-muted-foreground">
-                          <span>{dream.enablers.length} medium-term goals</span>
-                          <span>{dream.enablers.reduce((acc: number, enabler: any) => acc + enabler.shortGoals.length, 0)} actions</span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>;
+            return;
           })}
           </TabsContent>
 

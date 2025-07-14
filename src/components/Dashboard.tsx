@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Target, CheckCircle2, XCircle, Gift, Send, Frown } from 'lucide-react';
+
 export const Dashboard: React.FC = () => {
   const { store } = useApp();
   const navigate = useNavigate();
@@ -54,10 +55,13 @@ export const Dashboard: React.FC = () => {
       rdmRemorseBucket
     };
   };
+
   const todayHabits = getTodayHabitsProgress();
   const newStats = getNewDashboardStats();
+
   if (store.dreams.length === 0) {
-    return <div className="p-4 space-y-6">
+    return (
+      <div className="p-4 space-y-6">
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold text-[#374151]">Your Progress</h1>
           <p className="text-gray-600">Track your journey towards your dreams</p>
@@ -69,9 +73,12 @@ export const Dashboard: React.FC = () => {
             <p className="text-gray-600">Complete the goal wizard to start tracking your progress!</p>
           </CardContent>
         </Card>
-      </div>;
+      </div>
+    );
   }
-  return <div className="p-4 space-y-6">
+
+  return (
+    <div className="p-4 space-y-6">
       <div className="text-center space-y-2">
         <h1 className="text-3xl font-bold text-[#374151]">Your Progress</h1>
         <p className="text-gray-600">Track your journey towards your dreams</p>

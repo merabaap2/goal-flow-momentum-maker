@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ArrowLeft, User } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowLeft, User, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { Button } from '@/components/ui/button';
@@ -7,6 +7,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { BottomNav } from '@/components/ui/BottomNav';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
+import { Toaster } from '@/components/ui/toaster';
 
 interface Contact {
   id: string;
@@ -17,6 +19,7 @@ interface Contact {
 export const RDMRewardsEarnedPage: React.FC = () => {
   const navigate = useNavigate();
   const { store } = useApp();
+  const { toast } = useToast();
   
   // State management
   const [selectedReward, setSelectedReward] = useState<string>('');
@@ -35,42 +38,78 @@ export const RDMRewardsEarnedPage: React.FC = () => {
     { id: '5', name: 'Alex Wilson', email: 'alex@example.com' },
   ];
 
-  // Calculate today's base points (current earnings)
-  const calculateTodayBasePoints = () => {
-    const today = new Date().toDateString();
-    
-    // Get today's completed tasks
-    const todayTasks = store.dreams.reduce((acc, dream) => 
-      acc + dream.enablers.reduce((subAcc: number, enabler: any) => 
-        subAcc + enabler.shortGoals.filter((goal: any) => 
-          goal.done && goal.completedAt && new Date(goal.completedAt).toDateString() === today
-        ).length, 0
-      ), 0
-    );
-    
-    // Get today's completed habits
-    const todayHabits = store.dreams.reduce((acc, dream) => 
-      acc + dream.enablers.reduce((subAcc: number, enabler: any) => 
-        subAcc + enabler.dailyHabits.reduce((habitAcc: number, habit: any) => 
-          habitAcc + habit.history.filter((entry: any) => 
-            new Date(entry.date).toDateString() === today
-          ).length, 0
-        ), 0
-      ), 0
-    );
-
-    return (todayTasks * 10) + (todayHabits * 5);
-  };
-
-  const basePoints = calculateTodayBasePoints();
+  // Set base points to 100 for demo purposes
+  const basePoints = 100;
 
   // Calculate total amount from all inputs
   const totalAmount = rewardExitAmount + rewardOtherAmount + remorseSelfAmount;
 
+  // Validation function for insufficient funds
+  const checkInsufficientFunds = (newAmount: number, currentField: 'exit' | 'other' | 'self') => {
+    let otherAmounts = 0;
+    
+    switch (currentField) {
+      case 'exit':
+        otherAmounts = rewardOtherAmount + remorseSelfAmount;
+        break;
+      case 'other':
+        otherAmounts = rewardExitAmount + remorseSelfAmount;
+        break;
+      case 'self':
+        otherAmounts = rewardExitAmount + rewardOtherAmount;
+        break;
+    }
+    
+    const totalWithNewAmount = newAmount + otherAmounts;
+    
+    if (totalWithNewAmount > basePoints) {
+      toast({
+        title: "Insufficient Funds!",
+        description: `You only have ${basePoints} points available. Current allocation would be ${totalWithNewAmount} points.`,
+        variant: "destructive",
+      });
+      return false;
+    }
+    return true;
+  };
+
+  // Handle input changes with validation
+  const handleExitAmountChange = (value: number) => {
+    if (checkInsufficientFunds(value, 'exit')) {
+      setRewardExitAmount(value);
+    }
+  };
+
+  const handleOtherAmountChange = (value: number) => {
+    if (checkInsufficientFunds(value, 'other')) {
+      setRewardOtherAmount(value);
+    }
+  };
+
+  const handleSelfAmountChange = (value: number) => {
+    if (checkInsufficientFunds(value, 'self')) {
+      setRemorseSelfAmount(value);
+    }
+  };
+
   // Handle submit
   const handleSubmit = () => {
+    if (totalAmount > basePoints) {
+      toast({
+        title: "Cannot Submit!",
+        description: `Total amount (${totalAmount}) exceeds available funds (${basePoints}).`,
+        variant: "destructive",
+      });
+      return;
+    }
+    
     if (totalAmount > 0) {
       setBalanceCalculated(true);
+      toast({
+        title: "Balance Calculated!",
+        description: "Your rewards have been allocated successfully.",
+        variant: "default",
+      });
     }
   };
 
@@ -148,7 +187,7 @@ export const RDMRewardsEarnedPage: React.FC = () => {
                   <Input
                     type="number"
                     value={rewardExitAmount || ''}
-                    onChange={(e) => setRewardExitAmount(Number(e.target.value) || 0)}
+                    onChange={(e) => handleExitAmountChange(Number(e.target.value) || 0)}
                     className="w-20 h-10 text-center font-semibold"
                     min="0"
                     max={basePoints}
@@ -197,7 +236,7 @@ export const RDMRewardsEarnedPage: React.FC = () => {
                   <Input
                     type="number"
                     value={rewardOtherAmount || ''}
-                    onChange={(e) => setRewardOtherAmount(Number(e.target.value) || 0)}
+                    onChange={(e) => handleOtherAmountChange(Number(e.target.value) || 0)}
                     className="w-20 h-10 text-center font-semibold"
                     min="0"
                     max={basePoints}
@@ -227,7 +266,7 @@ export const RDMRewardsEarnedPage: React.FC = () => {
                   <Input
                     type="number"
                     value={remorseSelfAmount || ''}
-                    onChange={(e) => setRemorseSelfAmount(Number(e.target.value) || 0)}
+                    onChange={(e) => handleSelfAmountChange(Number(e.target.value) || 0)}
                     className="w-20 h-10 text-center font-semibold"
                     min="0"
                     max={basePoints}
@@ -282,6 +321,7 @@ export const RDMRewardsEarnedPage: React.FC = () => {
         </Card>
       </div>
       <BottomNav />
+      <Toaster />
     </div>
   );
 };

@@ -162,11 +162,20 @@ export const Dashboard: React.FC = () => {
       
 
       {/* Today's Habits */}
-      {todayHabits.total > 0}
-
-      {/* Data Storage Note */}
-      <Card className="border-2 border-blue-200 bg-blue-50">
-        
-      </Card>
+      {todayHabits.total > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              📅 Today's Habits
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between">
+              <span>{todayHabits.completed} of {todayHabits.total} completed</span>
+              <Progress value={(todayHabits.completed / todayHabits.total) * 100} className="w-32" />
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>;
 };

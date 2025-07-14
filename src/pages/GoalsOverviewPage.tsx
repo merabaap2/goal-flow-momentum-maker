@@ -8,10 +8,10 @@ import { BottomNav } from '@/components/ui/BottomNav';
 import { Badge } from '@/components/ui/badge';
 export const GoalsOverviewPage: React.FC = () => {
   const navigate = useNavigate();
-  const { store } = useApp();
-
-  return (
-    <div className="min-h-screen bg-background pb-20">
+  const {
+    store
+  } = useApp();
+  return <div className="min-h-screen bg-background pb-20">
       <div className="max-w-4xl mx-auto p-4 space-y-6">
         {/* Header */}
         <div className="flex items-center gap-4">
@@ -24,55 +24,7 @@ export const GoalsOverviewPage: React.FC = () => {
         </div>
 
         {/* Summary Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <Card className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-primary">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-primary/10 rounded-full">
-                  <Star className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Bucket List Items</p>
-                  <p className="text-2xl font-bold text-foreground">{store.dreams.length}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-blue-500">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-blue-500/10 rounded-full">
-                  <TrendingUp className="h-5 w-5 text-blue-500" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Medium Goals</p>
-                  <p className="text-2xl font-bold text-foreground">
-                    {store.dreams.reduce((acc: number, dream: any) => acc + (dream.enablers?.length || 0), 0)}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-green-500">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-green-500/10 rounded-full">
-                  <Activity className="h-5 w-5 text-green-500" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Short Goals</p>
-                  <p className="text-2xl font-bold text-foreground">
-                    {store.dreams.reduce((acc: number, dream: any) => 
-                      acc + (dream.enablers?.reduce((enablerAcc: number, enabler: any) => 
-                        enablerAcc + (enabler.shortGoals?.length || 0), 0) || 0), 0)}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        
 
         {/* Goals Overview */}
         <div className="space-y-6">
@@ -90,12 +42,7 @@ export const GoalsOverviewPage: React.FC = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              {store.dreams.length > 0 ? (
-                store.dreams.map((dream: any, index: number) => (
-                  <div
-                    key={index}
-                    className="p-4 bg-secondary/30 rounded-lg border border-border/50 hover:bg-secondary/50 transition-all duration-300 cursor-pointer group"
-                  >
+              {store.dreams.length > 0 ? store.dreams.map((dream: any, index: number) => <div key={index} className="p-4 bg-secondary/30 rounded-lg border border-border/50 hover:bg-secondary/50 transition-all duration-300 cursor-pointer group">
                     <div className="flex items-start gap-3">
                       <div className="p-1.5 bg-primary/20 rounded-full mt-1 group-hover:bg-primary/30 transition-colors">
                         <Target className="h-4 w-4 text-primary" />
@@ -109,15 +56,11 @@ export const GoalsOverviewPage: React.FC = () => {
                         </p>
                       </div>
                     </div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-8">
+                  </div>) : <div className="text-center py-8">
                   <Star className="h-12 w-12 mx-auto text-muted-foreground/50 mb-3" />
                   <p className="text-muted-foreground">No bucket list dreams yet</p>
                   <p className="text-sm text-muted-foreground/70">Start by creating your first dream!</p>
-                </div>
-              )}
+                </div>}
             </CardContent>
           </Card>
 
@@ -135,13 +78,7 @@ export const GoalsOverviewPage: React.FC = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              {store.dreams.length > 0 && store.dreams.some((dream: any) => dream.enablers?.length > 0) ? (
-                store.dreams.map((dream: any) => 
-                  dream.enablers?.map((enabler: any, index: number) => (
-                    <div
-                      key={index}
-                      className="p-4 bg-blue-50/50 dark:bg-blue-950/20 rounded-lg border border-blue-200/30 dark:border-blue-800/30 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all duration-300 cursor-pointer group"
-                    >
+              {store.dreams.length > 0 && store.dreams.some((dream: any) => dream.enablers?.length > 0) ? store.dreams.map((dream: any) => dream.enablers?.map((enabler: any, index: number) => <div key={index} className="p-4 bg-blue-50/50 dark:bg-blue-950/20 rounded-lg border border-blue-200/30 dark:border-blue-800/30 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all duration-300 cursor-pointer group">
                       <div className="flex items-start gap-3">
                         <div className="p-1.5 bg-blue-500/20 rounded-full mt-1 group-hover:bg-blue-500/30 transition-colors">
                           <TrendingUp className="h-4 w-4 text-blue-500" />
@@ -155,16 +92,11 @@ export const GoalsOverviewPage: React.FC = () => {
                           </p>
                         </div>
                       </div>
-                    </div>
-                  ))
-                )
-              ) : (
-                <div className="text-center py-8">
+                    </div>)) : <div className="text-center py-8">
                   <Calendar className="h-12 w-12 mx-auto text-muted-foreground/50 mb-3" />
                   <p className="text-muted-foreground">No medium term goals yet</p>
                   <p className="text-sm text-muted-foreground/70">Goals will appear when you create dreams</p>
-                </div>
-              )}
+                </div>}
             </CardContent>
           </Card>
 
@@ -177,73 +109,37 @@ export const GoalsOverviewPage: React.FC = () => {
                 </div>
                 Short Term Actions
                 <Badge variant="secondary" className="ml-auto">
-                  {store.dreams.reduce((acc: number, dream: any) => 
-                    acc + (dream.enablers?.reduce((enablerAcc: number, enabler: any) => 
-                      enablerAcc + (enabler.shortGoals?.length || 0), 0) || 0), 0)} Actions
+                  {store.dreams.reduce((acc: number, dream: any) => acc + (dream.enablers?.reduce((enablerAcc: number, enabler: any) => enablerAcc + (enabler.shortGoals?.length || 0), 0) || 0), 0)} Actions
                 </Badge>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              {store.dreams.length > 0 && store.dreams.some((dream: any) => 
-                dream.enablers?.some((enabler: any) => enabler.shortGoals?.length > 0)
-              ) ? (
-                store.dreams.map((dream: any) => 
-                  dream.enablers?.map((enabler: any) =>
-                    enabler.shortGoals?.map((goal: any, index: number) => (
-                      <div
-                        key={index}
-                        className={`p-4 rounded-lg border transition-all duration-300 cursor-pointer group ${
-                          goal.done 
-                            ? 'bg-green-50/50 dark:bg-green-950/20 border-green-200/50 dark:border-green-800/50 hover:bg-green-50 dark:hover:bg-green-950/30' 
-                            : 'bg-gray-50/50 dark:bg-gray-950/20 border-gray-200/30 dark:border-gray-800/30 hover:bg-gray-50 dark:hover:bg-gray-950/30'
-                        }`}
-                      >
+              {store.dreams.length > 0 && store.dreams.some((dream: any) => dream.enablers?.some((enabler: any) => enabler.shortGoals?.length > 0)) ? store.dreams.map((dream: any) => dream.enablers?.map((enabler: any) => enabler.shortGoals?.map((goal: any, index: number) => <div key={index} className={`p-4 rounded-lg border transition-all duration-300 cursor-pointer group ${goal.done ? 'bg-green-50/50 dark:bg-green-950/20 border-green-200/50 dark:border-green-800/50 hover:bg-green-50 dark:hover:bg-green-950/30' : 'bg-gray-50/50 dark:bg-gray-950/20 border-gray-200/30 dark:border-gray-800/30 hover:bg-gray-50 dark:hover:bg-gray-950/30'}`}>
                         <div className="flex items-start gap-3">
-                          <div className={`p-1.5 rounded-full mt-1 transition-colors ${
-                            goal.done 
-                              ? 'bg-green-500/20 group-hover:bg-green-500/30' 
-                              : 'bg-gray-500/20 group-hover:bg-gray-500/30'
-                          }`}>
-                            {goal.done ? (
-                              <CheckCircle2 className="h-4 w-4 text-green-500" />
-                            ) : (
-                              <Clock className="h-4 w-4 text-gray-500" />
-                            )}
+                          <div className={`p-1.5 rounded-full mt-1 transition-colors ${goal.done ? 'bg-green-500/20 group-hover:bg-green-500/30' : 'bg-gray-500/20 group-hover:bg-gray-500/30'}`}>
+                            {goal.done ? <CheckCircle2 className="h-4 w-4 text-green-500" /> : <Clock className="h-4 w-4 text-gray-500" />}
                           </div>
                           <div className="flex-1">
-                            <p className={`font-medium transition-colors ${
-                              goal.done 
-                                ? 'text-green-700 dark:text-green-300 line-through' 
-                                : 'text-foreground group-hover:text-green-600 dark:group-hover:text-green-400'
-                            }`}>
+                            <p className={`font-medium transition-colors ${goal.done ? 'text-green-700 dark:text-green-300 line-through' : 'text-foreground group-hover:text-green-600 dark:group-hover:text-green-400'}`}>
                               {goal.detail || goal.text}
                             </p>
                             <p className="text-sm text-muted-foreground mt-1">
                               {enabler.name || enabler.text} • {dream.text}
                             </p>
                           </div>
-                          {goal.done && (
-                            <Badge variant="outline" className="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700">
+                          {goal.done && <Badge variant="outline" className="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700">
                               Completed
-                            </Badge>
-                          )}
+                            </Badge>}
                         </div>
-                      </div>
-                    ))
-                  )
-                )
-              ) : (
-                <div className="text-center py-8">
+                      </div>))) : <div className="text-center py-8">
                   <Clock className="h-12 w-12 mx-auto text-muted-foreground/50 mb-3" />
                   <p className="text-muted-foreground">No short term actions yet</p>
                   <p className="text-sm text-muted-foreground/70">Actions will appear when you create goals</p>
-                </div>
-              )}
+                </div>}
             </CardContent>
           </Card>
         </div>
       </div>
       <BottomNav />
-    </div>
-  );
+    </div>;
 };

@@ -151,22 +151,6 @@ export const Dashboard: React.FC = () => {
           </Card>
         </div>
       </div>
-
-      {/* Bucket List Progress */}
-      
-
-      {/* Medium-Term Goals Details */}
-      
-
-      {/* Pending Tasks */}
-      
-
-      {/* Today's Habits */}
-      {todayHabits.total > 0}
-
-      {/* Data Storage Note */}
-      <Card className="border-2 border-blue-200 bg-blue-50">
-        
-      </Card>
-    </div>;
+    </div>
+  );
 };

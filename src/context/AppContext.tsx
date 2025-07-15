@@ -52,13 +52,14 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
           console.log('🔍 Parsed auth:', parsedAuth);
           setIsAuthenticated(true);
           
-          // Load user data only for login (not signup)
-          const existingData = localStorage.getItem('rdm-goals');
-          console.log('🔍 Existing goals data:', existingData);
+          // Load user-specific data using email as identifier
+          const userDataKey = `rdm-goals-${parsedAuth.email}`;
+          const existingData = localStorage.getItem(userDataKey);
+          console.log('🔍 User-specific goals data:', existingData, 'for key:', userDataKey);
           
           if (existingData) {
-            // Load existing goals data regardless of login/signup status
-            console.log('✅ Loading existing goals data');
+            // Load existing goals data for this specific user
+            console.log('✅ Loading existing goals data for user:', parsedAuth.email);
             setStore(JSON.parse(existingData));
             
             if (parsedAuth.loginTime) {
@@ -71,7 +72,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
               setIsFirstLaunch(true);
             }
           } else {
-            // No existing goals data
+            // No existing goals data for this user
+            console.log('🎯 No existing data for user:', parsedAuth.email);
+            setStore({ dreams: [], overallETA: 10 }); // Reset to clean state
+            
             if (parsedAuth.signupTime) {
               console.log('🎯 New signup user - going to wizard');
               setIsFirstLaunch(true);
@@ -95,7 +99,15 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
   const updateStore = (newStore: Store) => {
     setStore(newStore);
-    localStorage.setItem('rdm-goals', JSON.stringify(newStore));
+    
+    // Get current user email for user-specific storage
+    const authData = localStorage.getItem('rdm-auth');
+    if (authData) {
+      const parsedAuth = JSON.parse(authData);
+      const userDataKey = `rdm-goals-${parsedAuth.email}`;
+      localStorage.setItem(userDataKey, JSON.stringify(newStore));
+      console.log('💾 Saved data for user:', parsedAuth.email, 'with key:', userDataKey);
+    }
   };
 
   const addDream = (dream: Dream) => {
@@ -115,11 +127,19 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       localStorage.setItem('rdm-auth', JSON.stringify({ email, loginTime: Date.now() }));
       setIsAuthenticated(true);
       
-      // Check if user has existing goals
-      const existingData = localStorage.getItem('rdm-goals');
+      // Check if user has existing goals using user-specific key
+      const userDataKey = `rdm-goals-${email}`;
+      const existingData = localStorage.getItem(userDataKey);
+      console.log('🔍 Login - checking for existing data with key:', userDataKey);
+      
       if (existingData) {
+        console.log('✅ Found existing data for user:', email);
         setStore(JSON.parse(existingData));
         setIsFirstLaunch(false);
+      } else {
+        console.log('🎯 No existing data for user:', email, '- will go to wizard');
+        setStore({ dreams: [], overallETA: 10 }); // Reset to clean state
+        setIsFirstLaunch(true);
       }
       
       return true;
@@ -134,11 +154,14 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      console.log('📝 Signup successful - setting new user state');
+      console.log('📝 Signup successful - setting new user state for:', email);
       localStorage.setItem('rdm-auth', JSON.stringify({ email, name, signupTime: Date.now() }));
       setIsAuthenticated(true);
+      
+      // Clear any existing data and start fresh for new user
+      setStore({ dreams: [], overallETA: 10 });
       setIsFirstLaunch(true); // New users should go through wizard
-      console.log('🎯 Signup complete - isFirstLaunch set to true');
+      console.log('🎯 Signup complete - clean slate for new user:', email);
       
       return true;
     } catch (error) {
@@ -148,8 +171,19 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   };
 
   const logout = () => {
+    // Get current user before clearing auth
+    const authData = localStorage.getItem('rdm-auth');
+    
     localStorage.removeItem('rdm-auth');
-    localStorage.removeItem('rdm-goals');
+    
+    // Only remove current user's data, not all users' data
+    if (authData) {
+      const parsedAuth = JSON.parse(authData);
+      const userDataKey = `rdm-goals-${parsedAuth.email}`;
+      console.log('🚪 Logout - data preserved for user:', parsedAuth.email);
+      // Note: We don't remove user data on logout, only auth data
+    }
+    
     setIsAuthenticated(false);
     setIsFirstLaunch(true);
     setStore({ dreams: [], overallETA: 10 });

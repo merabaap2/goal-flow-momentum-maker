@@ -58,7 +58,7 @@ export const MediumTermStep: React.FC<MediumTermStepProps> = ({ data, onNext, on
   const generateSuggestions = async (bucketItem: string) => {
     setIsGeneratingSuggestions(true);
     try {
-      const prompt = `For the life goal/dream: "${bucketItem}", what are the most important medium-term goals someone should focus on to achieve this dream? Consider practical steps like skill development, resource building, networking, planning, etc.`;
+      const prompt = `For the life goal/dream: "${bucketItem}", what are the most important medium-term dreams someone should focus on to achieve this dream? Consider practical steps like skill development, resource building, networking, planning, etc.`;
       
       const aiSuggestions = await generateGeminiSuggestions(prompt, `User's dream: ${bucketItem}`);
       

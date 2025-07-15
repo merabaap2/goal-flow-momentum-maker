@@ -64,14 +64,14 @@ export const GoalsOverviewPage: React.FC = () => {
             </CardContent>
           </Card>
 
-          {/* Medium Term Goals Section */}
+          {/* Medium Term Dreams Section */}
           <Card className="hover:shadow-xl transition-all duration-500 hover:scale-[1.02] border-2 hover:border-blue-500/20">
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center gap-3 text-xl">
                 <div className="p-2 bg-blue-500/10 rounded-full">
                   <Calendar className="h-6 w-6 text-blue-500" />
                 </div>
-                Medium Term Goals
+                Medium Term Dreams
                 <Badge variant="secondary" className="ml-auto">
                   {store.dreams.reduce((acc: number, dream: any) => acc + (dream.enablers?.length || 0), 0)} Goals
                 </Badge>
@@ -94,13 +94,13 @@ export const GoalsOverviewPage: React.FC = () => {
                       </div>
                     </div>)) : <div className="text-center py-8">
                   <Calendar className="h-12 w-12 mx-auto text-muted-foreground/50 mb-3" />
-                  <p className="text-muted-foreground">No medium term goals yet</p>
+                  <p className="text-muted-foreground">No medium term dreams yet</p>
                   <p className="text-sm text-muted-foreground/70">Goals will appear when you create dreams</p>
                 </div>}
             </CardContent>
           </Card>
 
-          {/* Short Term Goals Section */}
+          {/* Short Term Dreams Section */}
           <Card className="hover:shadow-xl transition-all duration-500 hover:scale-[1.02] border-2 hover:border-green-500/20">
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center gap-3 text-xl">

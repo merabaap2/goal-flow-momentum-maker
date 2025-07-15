@@ -56,7 +56,7 @@ export const GoalWizard: React.FC = () => {
     wizardData.bucketList.forEach((bucketItem, index) => {
       const enablers: Enabler[] = [];
       
-      // Get medium term goals for this bucket item
+      // Get medium term dreams for this bucket item
       const mediumGoals = wizardData.mediumTermGoals[bucketItem] || [];
       
       mediumGoals.forEach((mediumGoal) => {
@@ -166,7 +166,7 @@ export const GoalWizard: React.FC = () => {
   const stepTitles = [
     "📝 Share Your Bucket List",
     "⏰ Set Your Timeline", 
-    "🎯 Medium-Term Goals",
+    "🎯 Medium-Term Dreams",
     "📋 Short-Term Actions",
     "🔄 Daily Habits",
     "🎉 Complete Setup"
@@ -175,7 +175,7 @@ export const GoalWizard: React.FC = () => {
   const stepDescriptions = [
     "Let's start with your biggest aspirations and bucket list dreams",
     "How long do you want to take to achieve these bucket list items?",
-    "What medium-term goals will help you reach your bucket list?",
+    "What medium-term dreams will help you reach your bucket list?",
     "What short-term actions will move you forward?",
     "What daily habits will keep you on track?",
     "Review and finalize your personalized goal roadmap"

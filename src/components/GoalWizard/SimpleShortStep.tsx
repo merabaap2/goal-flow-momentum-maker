@@ -47,7 +47,7 @@ export const SimpleShortStep: React.FC<SimpleShortStepProps> = ({
   const generateSuggestions = async () => {
     setIsGenerating(true);
     try {
-      const mediumGoalContext = mediumGoals.length > 0 ? ` The medium-term goals are: ${mediumGoals.join(', ')}.` : '';
+      const mediumGoalContext = mediumGoals.length > 0 ? ` The medium-term dreams are: ${mediumGoals.join(', ')}.` : '';
       const prompt = `For someone who wants to "${bucketItem}" over ${timeline} years${mediumGoalContext} Suggest 3 specific short-term actions (1-12 months) they can take now to make progress.
 
 Return ONLY a JSON array of strings like this:
@@ -124,7 +124,7 @@ Focus on immediate, actionable steps specific to "${bucketItem}".`;
           </p>
         </div>
         <p className="text-gray-600 px-4">
-          What short-term actions can you take in the next 1-3 months to move towards your goals within your {timeline}-year timeline?
+          What short-term dreams can you take in the next 1-3 months to move towards your dreams within your {timeline}-year timeline?
         </p>
       </div>
 

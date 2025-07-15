@@ -18,7 +18,7 @@ export const DailyHabitsStep: React.FC<DailyHabitsStepProps> = ({ data, onNext, 
   const [suggestions, setSuggestions] = useState<{ [key: string]: string[] }>({});
   const [isGeneratingSuggestions, setIsGeneratingSuggestions] = useState(false);
 
-  // Get all medium-term goals to create habits for
+  // Get all medium-term dreams to create habits for
   const allMediumTermGoals: string[] = [];
   Object.values(data.mediumTermGoals || {}).forEach(goals => {
     allMediumTermGoals.push(...goals);
@@ -175,7 +175,7 @@ export const DailyHabitsStep: React.FC<DailyHabitsStepProps> = ({ data, onNext, 
         <div className="text-6xl mb-4">🔄</div>
         <h2 className="text-2xl font-bold text-[#374151]">What daily habits will keep you on track?</h2>
         <p className="text-gray-600 leading-relaxed">
-          Success comes from consistent daily actions. For each medium-term goal, let's create small daily habits that will compound over time.
+          Success comes from consistent daily actions. For each medium-term dream, let's create small daily habits that will compound over time.
         </p>
       </div>
 
@@ -197,7 +197,7 @@ export const DailyHabitsStep: React.FC<DailyHabitsStepProps> = ({ data, onNext, 
       <Card className="border-2 border-gray-200">
         <CardHeader className="pb-4">
           <CardTitle className="text-xl text-[#374151]">Daily Habits for Your Goals</CardTitle>
-          <p className="text-gray-600 text-sm">Create small daily habits that will help you achieve your medium-term goals.</p>
+          <p className="text-gray-600 text-sm">Create small daily habits that will help you achieve your medium-term dreams.</p>
         </CardHeader>
         
         <CardContent className="space-y-8">

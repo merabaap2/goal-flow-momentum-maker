@@ -39,7 +39,7 @@ export const SimpleMediumStep: React.FC<SimpleMediumStepProps> = ({
     setIsGenerating(true);
     try {
       // Simplified approach - ask for direct suggestions
-      const prompt = `For someone who wants to "${bucketItem}" over ${timeline} years, suggest 3 specific medium-term goals (taking 2-7 years each) that directly enable this dream. 
+      const prompt = `For someone who wants to "${bucketItem}" over ${timeline} years, suggest 3 specific medium-term dreams (taking 2-7 years each) that directly enable this dream. 
 
 Return ONLY a JSON array of strings like this:
 ["goal 1", "goal 2", "goal 3"]
@@ -110,20 +110,20 @@ Focus on concrete, actionable milestones specific to "${bucketItem}".`;
   return <div className="space-y-6">
       <div className="text-center space-y-4">
         <div className="text-5xl mb-4">🎯</div>
-        <h2 className="text-2xl font-bold text-[#374151]">Medium-Term Goals</h2>
+        <h2 className="text-2xl font-bold text-[#374151]">Medium-Term Dreams</h2>
         <div className="bg-green-50 border border-green-200 rounded-xl p-3">
           <p className="text-sm text-green-800 font-medium">
             Your Dream: "{bucketItem}"
           </p>
         </div>
         <p className="text-gray-600 px-4">
-          What medium-term goals will help you achieve this dream over {timeline} years? Think of milestones that could take 6 months to 2 years.
+          What medium-term dreams will help you achieve this dream over {timeline} years? Think of milestones that could take 6 months to 2 years.
         </p>
       </div>
 
       <div className="space-y-4">
         {mediumGoals.map((goal, index) => <div key={index} className="relative group">
-            <Textarea placeholder={`Medium-term goal ${index + 1}...`} value={goal} onChange={e => updateGoal(index, e.target.value)} className="min-h-[80px] resize-none border-2 rounded-xl focus:border-[#2BD192] transition-all duration-200" />
+            <Textarea placeholder={`Medium-term dream ${index + 1}...`} value={goal} onChange={e => updateGoal(index, e.target.value)} className="min-h-[80px] resize-none border-2 rounded-xl focus:border-[#2BD192] transition-all duration-200" />
             {mediumGoals.length > 1 && <button onClick={() => removeGoal(index)} className="absolute top-2 right-2 p-1 text-red-500 hover:bg-red-50 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200">
                 <Trash2 className="h-4 w-4" />
               </button>}

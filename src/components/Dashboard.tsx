@@ -138,7 +138,7 @@ export const Dashboard: React.FC = () => {
       {/* Bucket List Progress */}
       
 
-      {/* Medium-Term Goals Details */}
+      {/* Medium-Term Dreams Details */}
       
 
       {/* Pending Tasks */}

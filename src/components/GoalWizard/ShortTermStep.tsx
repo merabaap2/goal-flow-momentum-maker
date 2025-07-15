@@ -22,7 +22,7 @@ export const ShortTermStep: React.FC<ShortTermStepProps> = ({ data, onNext, onBa
   const [expandedItems, setExpandedItems] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
-    // Initialize goals for each medium-term goal
+    // Initialize goals for each medium-term dream
     const initialGoals: { [key: string]: string[] } = {};
     Object.values(data.mediumTermGoals || {}).flat().forEach(goal => {
       if (!shortTermGoals[goal]) {
@@ -58,9 +58,9 @@ export const ShortTermStep: React.FC<ShortTermStepProps> = ({ data, onNext, onBa
   const generateSuggestions = async (mediumGoal: string) => {
     setIsGeneratingSuggestions(true);
     try {
-      const prompt = `For the medium-term goal: "${mediumGoal}", what are 3 specific DAILY actions someone can take to achieve this goal? Think of small, actionable habits that can be done every day or week. Focus on granular, specific actions that build toward the medium-term goal.`;
+      const prompt = `For the medium-term dream: "${mediumGoal}", what are 3 specific DAILY actions someone can take to achieve this dream? Think of small, actionable habits that can be done every day or week. Focus on granular, specific actions that build toward the medium-term dream.`;
       
-      const aiSuggestions = await generateGeminiSuggestions(prompt, `Medium-term goal: ${mediumGoal}`);
+      const aiSuggestions = await generateGeminiSuggestions(prompt, `Medium-term dream: ${mediumGoal}`);
       
       if (aiSuggestions.length > 0) {
         setSuggestions(prev => ({
@@ -163,7 +163,7 @@ export const ShortTermStep: React.FC<ShortTermStepProps> = ({ data, onNext, onBa
         <div className="text-6xl mb-4">📋</div>
         <h2 className="text-2xl font-bold text-[#374151]">What short-term actions will move you forward?</h2>
         <p className="text-gray-600 leading-relaxed px-2">
-          For each medium-term goal, let's identify specific actions for the next 3-6 months 🚀
+          For each medium-term dream, let's identify specific actions for the next 3-6 months 🚀
         </p>
       </div>
 
@@ -189,7 +189,7 @@ export const ShortTermStep: React.FC<ShortTermStepProps> = ({ data, onNext, onBa
               </h3>
             </div>
 
-            {/* Medium-term goals under this bucket item */}
+            {/* Medium-term dreams under this bucket item */}
             {mediumGoals.map((mediumGoal, goalIndex) => (
               <Card key={goalIndex} className="border-2 border-gray-200 ml-4">
                 <CardHeader className="pb-3">
@@ -238,7 +238,7 @@ export const ShortTermStep: React.FC<ShortTermStepProps> = ({ data, onNext, onBa
                     {(shortTermGoals[mediumGoal] || []).map((goal, goalIndex) => (
                       <div key={goalIndex} className="relative group">
                         <Textarea
-                          placeholder={`Short-term action ${goalIndex + 1} for ${mediumGoal}...`}
+                          placeholder={`Short-term dream ${goalIndex + 1} for ${mediumGoal}...`}
                           value={goal}
                           onChange={(e) => updateGoal(mediumGoal, goalIndex, e.target.value)}
                           className={cn(

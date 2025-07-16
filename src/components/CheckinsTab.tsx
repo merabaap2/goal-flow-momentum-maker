@@ -1,9 +1,12 @@
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { HabitCheckbox } from './ui/HabitCheckbox';
 import { toast } from 'sonner';
 
 export const CheckinsTab: React.FC = () => {
+  const navigate = useNavigate();
+  
   // Mock daily habits
   const [habits, setHabits] = useState([
     { id: '1', detail: 'Read for 30 minutes', streak: 5, checked: false },
@@ -20,6 +23,10 @@ export const CheckinsTab: React.FC = () => {
           toast.success('✅ +1 day logged', {
             description: `${habit.detail} - ${newStreak} day streak!`
           });
+          // Navigate to rewards and remorse page when habit is completed
+          setTimeout(() => {
+            navigate('/rdm-rewards-earned');
+          }, 1500); // Delay to show the toast first
         }
         return { ...habit, checked, streak: newStreak };
       }

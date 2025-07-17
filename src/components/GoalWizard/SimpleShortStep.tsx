@@ -21,6 +21,7 @@ export const SimpleShortStep: React.FC<SimpleShortStepProps> = ({
 }) => {
   const [shortGoals, setShortGoals] = useState<string[]>(['']);
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [selectedSuggestions, setSelectedSuggestions] = useState<string[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
 
   const addGoal = () => {
@@ -97,14 +98,29 @@ Focus on immediate, actionable steps specific to "${bucketItem}".`;
     }
   };
 
-  const applySuggestion = (suggestion: string) => {
-    const emptyIndex = shortGoals.findIndex(goal => goal.trim() === '');
-    if (emptyIndex !== -1) {
-      updateGoal(emptyIndex, suggestion);
-    } else if (shortGoals.length < 5) {
-      setShortGoals([...shortGoals, suggestion]);
-    }
+  const toggleSuggestionSelection = (suggestion: string) => {
+    setSelectedSuggestions(prev => 
+      prev.includes(suggestion)
+        ? prev.filter(s => s !== suggestion)
+        : [...prev, suggestion]
+    );
+  };
+
+  const applySelectedSuggestions = () => {
+    selectedSuggestions.forEach(suggestion => {
+      const emptyIndex = shortGoals.findIndex(goal => goal.trim() === '');
+      if (emptyIndex !== -1) {
+        updateGoal(emptyIndex, suggestion);
+      } else if (shortGoals.length < 5) {
+        setShortGoals(prev => [...prev, suggestion]);
+      }
+    });
+    closeSuggestions();
+  };
+
+  const closeSuggestions = () => {
     setSuggestions([]);
+    setSelectedSuggestions([]);
   };
 
   const handleNext = () => {
@@ -172,21 +188,54 @@ Focus on immediate, actionable steps specific to "${bucketItem}".`;
 
       {suggestions.length > 0 && (
         <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
-          <h3 className="font-bold text-yellow-800 text-sm mb-3 flex items-center">
-            <Lightbulb className="mr-2 h-4 w-4" />
-            AI Suggestions for "{bucketItem}":
-          </h3>
-          <div className="space-y-2">
-            {suggestions.map((suggestion, index) => (
-              <button
-                key={index}
-                onClick={() => applySuggestion(suggestion)}
-                className="w-full text-left p-3 bg-white rounded-lg hover:bg-yellow-100 transition-colors border border-yellow-200"
-              >
-                <span className="text-sm text-gray-700">• {suggestion}</span>
-              </button>
-            ))}
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-bold text-yellow-800 text-sm flex items-center">
+              <Lightbulb className="mr-2 h-4 w-4" />
+              AI Suggestions for "{bucketItem}":
+            </h3>
+            <button 
+              onClick={closeSuggestions}
+              className="text-yellow-600 hover:text-yellow-800 text-sm font-medium"
+            >
+              ✕
+            </button>
           </div>
+          <div className="space-y-2 mb-4">
+            {suggestions.map((suggestion, index) => {
+              const isSelected = selectedSuggestions.includes(suggestion);
+              return (
+                <button 
+                  key={index} 
+                  onClick={() => toggleSuggestionSelection(suggestion)} 
+                  className={`w-full text-left p-3 rounded-lg transition-colors border ${
+                    isSelected 
+                      ? 'bg-yellow-200 border-yellow-400 text-yellow-800' 
+                      : 'bg-white border-yellow-200 hover:bg-yellow-100'
+                  }`}
+                >
+                  <span className="text-sm">
+                    {isSelected ? '✓ ' : '• '}{suggestion}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          {selectedSuggestions.length > 0 && (
+            <div className="flex gap-2">
+              <button
+                onClick={applySelectedSuggestions}
+                className="flex-1 px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm font-medium"
+              >
+                Apply Selected ({selectedSuggestions.length})
+              </button>
+              <button
+                onClick={closeSuggestions}
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors text-sm font-medium"
+              >
+                Close
+              </button>
+            </div>
+          )}
         </div>
       )}
 

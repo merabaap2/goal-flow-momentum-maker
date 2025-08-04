@@ -110,13 +110,19 @@ Focus on simple, consistent habits specific to "${bucketItem}".`;
   };
 
   const applySelectedSuggestions = () => {
-    selectedSuggestions.forEach(suggestion => {
-      const emptyIndex = dailyHabits.findIndex(habit => habit.trim() === '');
-      if (emptyIndex !== -1) {
-        updateHabit(emptyIndex, suggestion);
-      } else if (dailyHabits.length < 5) {
-        setDailyHabits(prev => [...prev, suggestion]);
-      }
+    setDailyHabits(prev => {
+      let updatedHabits = [...prev];
+      
+      selectedSuggestions.forEach(suggestion => {
+        const emptyIndex = updatedHabits.findIndex(habit => habit.trim() === '');
+        if (emptyIndex !== -1) {
+          updatedHabits[emptyIndex] = suggestion;
+        } else if (updatedHabits.length < 5) {
+          updatedHabits.push(suggestion);
+        }
+      });
+      
+      return updatedHabits;
     });
     closeSuggestions();
   };

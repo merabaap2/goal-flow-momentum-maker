@@ -81,8 +81,6 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
             }
           }
         }
-        
-        console.log('🚀 Final isFirstLaunch state:', isFirstLaunch);
       } catch (error) {
         console.error('Error loading data:', error);
       } finally {
